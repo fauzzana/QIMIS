@@ -1,11 +1,18 @@
 import { ChartAreaInteractive } from "@/components/admin/dashboard/chart-area-interactive"
 import { DataTable } from "@/components/admin/dashboard/data-table"
 import { SectionCards } from "@/components/admin/dashboard/section-cards"
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
 
 import data from "./data.json"
 
-export default function Page() {
+export default async function Page() {
+  const session = await auth();
+
+  if (session?.user.role !== "ADMIN") {
+    redirect("/");
+  }
   return (
     <div className="flex flex-1 flex-col">
       <div className="@container/main flex flex-1 flex-col gap-2">
