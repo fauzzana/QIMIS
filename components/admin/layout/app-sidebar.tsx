@@ -3,14 +3,14 @@
 import * as React from "react"
 import {
   AudioWaveform,
-  BookOpen,
-  Bot,
+  Boxes,
   Command,
   House,
   GalleryVerticalEnd,
   Settings2,
   FileUser,
   Icon,
+  Package,
 } from "lucide-react"
 
 import { NavMain } from "@/components/admin/layout/nav-main"
@@ -29,9 +29,9 @@ import { url } from "inspector"
 // This is sample data.
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    name: "",
+    email: "",
+    avatar: "",
   },
   teams: [
     {
@@ -81,7 +81,7 @@ const data = {
     {
       title: "Asset Management",
       url: "#",
-      icon: Bot,
+      icon: Boxes,
       items: [
         {
           title: "Data Assets",
@@ -100,7 +100,7 @@ const data = {
     {
       title: "Inventory Management",
       url: "#",
-      icon: BookOpen,
+      icon: Package,
       items: [
         {
           title: "Data Items",
