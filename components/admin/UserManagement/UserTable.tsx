@@ -30,8 +30,25 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
+import {
+  flexRender,
+  getCoreRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+  type ColumnDef,
+  type ColumnFiltersState,
+  type Row,
+  type SortingState,
+  type VisibilityState,
+} from "@tanstack/react-table"
+
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 
 import {
@@ -47,6 +64,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuCheckboxItem
 } from "@/components/ui/dropdown-menu"
 
 import {
@@ -58,6 +77,13 @@ import {
   Trash2,
   GripVertical,
 } from "lucide-react"
+
+import { IconLayoutColumns, IconPlus, IconChevronDown, IconChevronsLeft, IconChevronLeft, IconChevronRight, IconChevronsRight } from "@tabler/icons-react"
+import { Label } from "@/components/ui/label"
+
+import {
+  Tabs
+} from "@/components/ui/tabs"
 
 import { z } from "zod"
 
@@ -72,7 +98,100 @@ export const schema = z.object({
   }).nullable(),
 })
 
-type User = z.infer<typeof schema>
+const columns: ColumnDef<z.infer<typeof schema>>[] = [
+  {
+    id: "drag",
+    header: () => null,
+    cell: ({ row }) => <DragHandle id={row.original.id} />,
+  },
+  {
+    accessorKey: "name",
+    header: "Name",
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center gap-2">
+          <span>{row.original.name || "N/A"}</span>
+        </div>)
+    }
+  },
+  {
+    accessorKey: "email",
+    header: "Email",
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center gap-2">
+          <span>{row.original.email || "N/A"}</span>
+        </div>)
+    }
+  },
+  {
+    accessorKey: "role",
+    header: "Role",
+    cell: ({ row }) => {
+      const getRoleBadgeVariant = (role: string) => {
+        switch (role) {
+          case "ADMIN":
+            return "destructive"
+          case "MANAGEMENT":
+            return "default"
+          case "STAFF":
+            return "secondary"
+          default: return "outline"
+        }
+      }
+
+      return (
+        <Badge variant={getRoleBadgeVariant(row.original.role)}>{row.original.role}</Badge>
+      )
+    }
+  },
+  {
+    accessorKey: "department.depart_name",
+    header: "Department",
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center gap-2">
+          <span>{row.original.department?.depart_name || "N/A"}</span>
+        </div>)
+    }
+  },
+  {
+    accessorKey: "userId",
+    header: "User ID",
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center gap-2">
+          <span>{row.original.userId || "N/A"}</span>
+        </div>)
+    }
+  },
+  {
+    id: "actions",
+    cell: () => (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="icon">
+            <MoreHorizontal />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem>
+            <Edit className="mr-2 h-4 w-4" /> Edit
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <UserCheck className="mr-2 h-4 w-4" /> Activate
+          </DropdownMenuItem>
+          <DropdownMenuItem className="text-destructive">
+            <UserX className="mr-2 h-4 w-4" /> Deactivate
+          </DropdownMenuItem>
+          <DropdownMenuItem className="text-destructive">
+            <Trash2 className="mr-2 h-4 w-4" /> Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    ),
+  }
+]
 
 function DragHandle({ id }: { id: string }) {
   const { attributes, listeners } = useSortable({ id })
@@ -86,87 +205,100 @@ function DragHandle({ id }: { id: string }) {
       className="size-7"
     >
       <GripVertical className="size-4" />
+      <span className="sr-only">Drag to reorder</span>
     </Button>
   )
 }
 
-function DraggableRow({ user }: { user: User }) {
+function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
   const { setNodeRef, transform, transition, isDragging } = useSortable({
-    id: user.id,
+    id: row.id,
   })
-  const getRoleBadgeVariant = (role: string) => {
-    switch (role) {
-      case "ADMIN":
-        return "destructive"
-      case "MANAGEMENT":
-        return "default"
-      case "STAFF":
-        return "secondary"
-      default: return "outline"
-    }
-  }
 
   return (
     <TableRow
+      data-state={row.getIsSelected() && "selected"}
+      data-dragging={isDragging}
       ref={setNodeRef}
+      className="relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80"
       style={{
         transform: CSS.Transform.toString(transform),
-        transition,
+        transition: transition,
       }}
-      className={isDragging ? "opacity-70" : ""}
     >
-      <TableCell>
-        <DragHandle id={user.id} />
-      </TableCell>
-      <TableCell>{user.name || "N/A"}</TableCell>
-      <TableCell>{user.email || "N/A"}</TableCell>
-      <TableCell>
-        <Badge variant={getRoleBadgeVariant(user.role)}>{user.role}</Badge>
-      </TableCell>
-      <TableCell>{user.department?.depart_name || "N/A"}</TableCell>
-      <TableCell>{user.userId || "N/A"}</TableCell>
-      <TableCell>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem>
-              <Edit className="mr-2 h-4 w-4" /> Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <UserCheck className="mr-2 h-4 w-4" /> Activate
-            </DropdownMenuItem>
-            <DropdownMenuItem className="text-destructive">
-              <UserX className="mr-2 h-4 w-4" /> Deactivate
-            </DropdownMenuItem>
-            <DropdownMenuItem className="text-destructive">
-              <Trash2 className="mr-2 h-4 w-4" /> Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </TableCell>
+      {row.getVisibleCells().map((cell) => (
+        <TableCell key={cell.id} data-state={cell.column.id === "select" && row.getIsSelected() && "selected"}>
+          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+        </TableCell>
+      ))}
     </TableRow>
   )
 }
 
-export function UserTable({ data: initialData }: { data: User[] }) {
-  const [data, setData] = React.useState<User[]>(initialData ?? [])
-  const [searchTerm, setSearchTerm] = React.useState("")
+export function UserTable({ data: initialData }: { data: z.infer<typeof schema>[] }) {
+  const [data, setData] = React.useState(() => initialData)
+  const [globalFilter, setGlobalFilter] = React.useState("")
+  const [rowSelection, setRowSelection] = React.useState({})
   const [roleFilter, setRoleFilter] = React.useState("all")
-
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({})
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  )
+  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [pagination, setPagination] = React.useState({
+    pageIndex: 0,
+    pageSize: 10,
+  })
+  const sortableId = React.useId()
   const sensors = useSensors(
-    useSensor(MouseSensor),
-    useSensor(TouchSensor),
-    useSensor(KeyboardSensor)
+    useSensor(MouseSensor, {}),
+    useSensor(TouchSensor, {}),
+    useSensor(KeyboardSensor, {})
   )
 
   const dataIds = React.useMemo<UniqueIdentifier[]>(
     () => data?.map((item) => item.id),
     [data]
   )
+
+  const table = useReactTable({
+    data,
+    columns,
+    state: {
+      sorting,
+      columnVisibility,
+      rowSelection,
+      columnFilters,
+      pagination,
+      globalFilter,
+    },
+    getRowId: (row) => row.id.toString(),
+    enableRowSelection: true,
+    onRowSelectionChange: setRowSelection,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
+    onPaginationChange: setPagination,
+    onGlobalFilterChange: setGlobalFilter,
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFacetedRowModel: getFacetedRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
+    globalFilterFn: (row, filterValue) => {
+      const user = row.original
+      const search = filterValue.toLowerCase()
+      return (
+        !!user.id?.toLowerCase().includes(search) ||
+        !!user.name?.toLowerCase().includes(search) ||
+        !!user.email?.toLowerCase().includes(search) ||
+        !!user.role?.toLowerCase().includes(search) ||
+        !!user.department?.depart_name?.toLowerCase().includes(search)
+      )
+    },
+  })
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event
@@ -180,87 +312,222 @@ export function UserTable({ data: initialData }: { data: User[] }) {
     }
   }
 
-  const filteredUsers = data.filter((user) => {
-    const matchesSearch =
-      user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.userId?.toLowerCase().includes(searchTerm.toLowerCase())
-
-    const matchesRole =
-      roleFilter === "all" || user.role === roleFilter
-
-    return matchesSearch && matchesRole
-  })
-
   return (
-    <div className="space-y-4">
-      {/* FILTER */}
-      <div className="flex gap-2">
-        <div className="relative max-w-sm w-full">
-          <Search className="absolute left-2 top-2.5 h-4 w-4" />
-          <Input
-            className="pl-8"
-            placeholder="Search..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+    <Tabs
+      defaultValue="outline"
+      className="w-full flex-col justify-start gap-6"
+    >
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <DropdownMenu>
+            <div className="flex gap-2">
+              <div className="relative max-w-sm w-full">
+                <Search className="absolute left-2 top-2.5 h-4 w-4" />
+                <Input
+                  className="pl-8"
+                  placeholder="Search..."
+                  value={globalFilter}
+                  onChange={(e) => setGlobalFilter(e.target.value)}
+                />
+              </div>
+            </div>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <IconLayoutColumns />
+                <span className="hidden lg:inline">Customize Columns</span>
+                <span className="lg:hidden">Columns</span>
+                <IconChevronDown />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              {table
+                .getAllColumns()
+                .filter(
+                  (column) =>
+                    typeof column.accessorFn !== "undefined" &&
+                    column.getCanHide()
+                )
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  )
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <span className="hidden lg:inline">Filter by Role</span>
+                <span className="lg:hidden">Role</span>
+                <IconChevronDown />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuItem onSelect={() => {
+                setRoleFilter("all")
+                table.setColumnFilters([])
+              }}>
+                All
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => {
+                setRoleFilter("ADMIN")
+                table.setColumnFilters([{ id: "role", value: "ADMIN" }])
+              }}>
+                Admin
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => {
+                setRoleFilter("MANAGEMENT")
+                table.setColumnFilters([{ id: "role", value: "MANAGEMENT" }])
+              }}>
+                Management
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => {
+                setRoleFilter("STAFF")
+                table.setColumnFilters([{ id: "role", value: "STAFF" }])
+              }}>
+                Staff
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-
-        <Select value={roleFilter} onValueChange={setRoleFilter}>
-          <SelectTrigger className="w-37.5">
-            <SelectValue placeholder="Role" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="ADMIN">Admin</SelectItem>
-            <SelectItem value="MANAGEMENT">Management</SelectItem>
-            <SelectItem value="STAFF">Staff</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* TABLE */}
-      <div className="border rounded-md">
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          modifiers={[restrictToVerticalAxis]}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={dataIds}
-            strategy={verticalListSortingStrategy}
+        <div className="overflow-hidden rounded-lg border">
+          <DndContext
+            collisionDetection={closestCenter}
+            modifiers={[restrictToVerticalAxis]}
+            onDragEnd={handleDragEnd}
+            sensors={sensors}
+            id={sortableId}
           >
             <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead />
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Department</TableHead>
-                  <TableHead>User ID</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
+              <TableHeader className=" top-0 z-10 bg-muted">
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => {
+                      return (
+                        <TableHead key={header.id} colSpan={header.colSpan}>
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                        </TableHead>
+                      )
+                    })}
+                  </TableRow>
+                ))}
               </TableHeader>
-
-              <TableBody>
-                {filteredUsers.length === 0 ? (
+              <TableBody className="**:data-[slot=table-cell]:first:w-8">
+                {table.getRowModel().rows?.length ? (
+                  <SortableContext
+                    items={dataIds}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {table.getRowModel().rows.map((row) => (
+                      <DraggableRow key={row.id} row={row} />
+                    ))}
+                  </SortableContext>
+                ) : (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center py-6">
-                      No users found
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-24 text-center"
+                    >
+                      No results.
                     </TableCell>
                   </TableRow>
-                ) : (
-                  filteredUsers.map((user) => (
-                    <DraggableRow key={user.id} user={user} />
-                  ))
                 )}
               </TableBody>
             </Table>
-          </SortableContext>
-        </DndContext>
+          </DndContext>
+        </div>
+        <div className="flex items-center justify-between px-4">
+          <div className="hidden flex-1 text-sm text-muted-foreground lg:flex">
+            {table.getFilteredSelectedRowModel().rows.length} of{" "}
+            {table.getFilteredRowModel().rows.length} row(s) selected.
+          </div>
+          <div className="flex w-full items-center gap-8 lg:w-fit">
+            <div className="hidden items-center gap-2 lg:flex">
+              <Label htmlFor="rows-per-page" className="text-sm font-medium">
+                Rows per page
+              </Label>
+              <Select
+                value={`${table.getState().pagination.pageSize}`}
+                onValueChange={(value) => {
+                  table.setPageSize(Number(value))
+                }}
+              >
+                <SelectTrigger size="sm" className="w-20" id="rows-per-page">
+                  <SelectValue
+                    placeholder={table.getState().pagination.pageSize}
+                  />
+                </SelectTrigger>
+                <SelectContent side="top">
+                  {[10, 20, 30, 40, 50].map((pageSize) => (
+                    <SelectItem key={pageSize} value={`${pageSize}`}>
+                      {pageSize}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex w-fit items-center justify-center text-sm font-medium">
+              Page {table.getState().pagination.pageIndex + 1} of{" "}
+              {table.getPageCount()}
+            </div>
+            <div className="ml-auto flex items-center gap-2 lg:ml-0">
+              <Button
+                variant="outline"
+                className="hidden h-8 w-8 p-0 lg:flex"
+                onClick={() => table.setPageIndex(0)}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <span className="sr-only">Go to first page</span>
+                <IconChevronsLeft />
+              </Button>
+              <Button
+                variant="outline"
+                className="size-8"
+                size="icon"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <span className="sr-only">Go to previous page</span>
+                <IconChevronLeft />
+              </Button>
+              <Button
+                variant="outline"
+                className="size-8"
+                size="icon"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                <span className="sr-only">Go to next page</span>
+                <IconChevronRight />
+              </Button>
+              <Button
+                variant="outline"
+                className="hidden size-8 lg:flex"
+                size="icon"
+                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                disabled={!table.getCanNextPage()}
+              >
+                <span className="sr-only">Go to last page</span>
+                <IconChevronsRight />
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </Tabs>
   )
 }
