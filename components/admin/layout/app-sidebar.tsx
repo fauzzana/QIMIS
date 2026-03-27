@@ -106,7 +106,7 @@ const data = {
       items: [
         {
           title: "Data Items",
-          url: "#",
+          url: "/admin/inventoryManagement/dataItem",
         },
         {
           title: "Scan",

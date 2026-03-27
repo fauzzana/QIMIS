@@ -69,12 +69,31 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+
+import {
   MoreHorizontal,
   Search,
-  UserCheck,
-  UserX,
   Edit,
   Trash2,
+  QrCode,
   GripVertical,
 } from "lucide-react"
 
@@ -86,6 +105,8 @@ import {
 } from "@/components/ui/tabs"
 
 import { z } from "zod"
+import { handleEdit, handleQr, handleDelete } from "./ActionAsset"
+import { useMediaQuery } from "@/hooks/use-media-query"
 
 export const schema = z.object({
   asset_serial: z.string(),
@@ -246,27 +267,261 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   },
   {
     id: "actions",
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="flex size-8 text-muted-foreground data-[state=open]:bg-muted"
-            size="icon"
-          >
-            <MoreHorizontal />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuItem>Make a copy</DropdownMenuItem>
-          <DropdownMenuItem>Favorite</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
+    cell: ({ row }) => {
+      const [openEdit, setOpenEdit] = React.useState(false)
+      const [openQr, setOpenQr] = React.useState(false)
+      const isDesktop = useMediaQuery("(min-width: 768px)")
+
+      const edit = handleEdit(row.original)
+      const qr = handleQr(row.original.qr_code_path)
+      const deleteSelection = handleDelete(row.original.asset_serial)
+
+      if (isDesktop) {
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="flex size-8 text-muted-foreground data-[state=open]:bg-muted"
+                size="icon"
+              >
+                <MoreHorizontal />
+                <span className="sr-only">Open menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-32">
+              <Dialog open={openEdit} onOpenChange={setOpenEdit}>
+                {/* tombol edit */}
+                <DialogTrigger asChild>
+                  <DropdownMenuItem onSelect={(event) => event.preventDefault()}>
+                    <Edit className="mr-2 h-4 w-4" />Edit</DropdownMenuItem>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader className="text-left">
+                    <DialogTitle>Edit Asset</DialogTitle>
+                    <DialogDescription>
+                      Make changes to asset information. Click save when you&apos;re done.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div>
+                      <Label>Serial Number</Label>
+                      <Input disabled value={row.original.asset_serial} className="mt-1" />
+                    </div>
+                    <div>
+                      <Label>Name</Label>
+                      <Input name="name" defaultValue={row.original.name || ""} className="mt-1" />
+                    </div>
+                    <div>
+                      <Label>Description</Label>
+                      <Input name="description" defaultValue={row.original.description || ""} className="mt-1" />
+                    </div>
+                    <div>
+                      <Label>Quantity</Label>
+                      <Input type="number" name="qty" defaultValue={row.original.qty} className="mt-1" />
+                    </div>
+                    <div>
+                      <Label>Status</Label>
+                      <Select name="status" defaultValue={row.original.status.toString()}>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1">Available</SelectItem>
+                          <SelectItem value="2">In Use</SelectItem>
+                          <SelectItem value="3">Maintenance</SelectItem>
+                          <SelectItem value="4">Retired</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" onClick={() => setOpenEdit(false)}>Cancel</Button>
+                    <Button onClick={async (e) => {
+                      const dialogContent = (e.currentTarget as HTMLElement).closest('[role="dialog"]');
+                      if (dialogContent) {
+                        const nameInput = dialogContent.querySelector('input[name="name"]') as HTMLInputElement;
+                        const descInput = dialogContent.querySelector('input[name="description"]') as HTMLInputElement;
+                        const qtyInput = dialogContent.querySelector('input[name="qty"]') as HTMLInputElement;
+                        const statusSelect = dialogContent.querySelector('[name="status"]') as HTMLElement;
+
+                        const formData = new FormData();
+                        formData.set("name", nameInput?.value || "");
+                        formData.set("description", descInput?.value || "");
+                        formData.set("qty", qtyInput?.value || "0");
+
+                        const statusValue = statusSelect?.getAttribute("data-state") || row.original.status.toString();
+                        formData.set("status", statusValue);
+
+                        await edit(formData);
+                        setOpenEdit(false);
+                      }
+                    }}>Save Changes</Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+              <Dialog open={openQr} onOpenChange={setOpenQr}>
+                {/* tombol qr */}
+                <DialogTrigger asChild>
+                  <DropdownMenuItem onSelect={(event) => event.preventDefault()}>
+                    <QrCode className="mr-2 h-4 w-4" />QR Code</DropdownMenuItem>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader className="text-left">
+                    <DialogTitle>Asset QR Code</DialogTitle>
+                    <DialogDescription>
+                      QR code for asset {row.original.asset_serial}
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="flex items-center justify-center p-4">
+                    {row.original.qr_code_path ? (
+                      <img
+                        src={row.original.qr_code_path}
+                        alt="QR Code"
+                        className="w-64 h-64"
+                        onClick={qr}
+                      />
+                    ) : (
+                      <p className="text-gray-500">QR Code not available</p>
+                    )}
+                  </div>
+                  <Button variant="outline" onClick={() => setOpenQr(false)}>Close</Button>
+                </DialogContent>
+              </Dialog>
+              <DropdownMenuSeparator />
+              {/* tombol delete */}
+              <DropdownMenuItem variant="destructive" onClick={deleteSelection} onSelect={(event) => event.preventDefault()}>
+                <Trash2 className="mr-2 h-4 w-4" />Delete</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )
+      }
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="flex size-8 text-muted-foreground data-[state=open]:bg-muted"
+              size="icon"
+            >
+              <MoreHorizontal />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-32">
+            <Drawer open={openEdit} onOpenChange={setOpenEdit}>
+              {/* tombol edit */}
+              <DrawerTrigger asChild>
+                <DropdownMenuItem onSelect={(event) => event.preventDefault()}>
+                  <Edit className="mr-2 h-4 w-4" />Edit</DropdownMenuItem>
+              </DrawerTrigger>
+              <DrawerContent>
+                <DrawerHeader className="text-left">
+                  <DrawerTitle>Edit Asset</DrawerTitle>
+                  <DrawerDescription>
+                    Make changes to asset information. Tap save when you&apos;re done.
+                  </DrawerDescription>
+                </DrawerHeader>
+                <div className="space-y-4 p-4">
+                  <div>
+                    <Label>Serial Number</Label>
+                    <Input disabled value={row.original.asset_serial} className="mt-1" />
+                  </div>
+                  <div>
+                    <Label>Name</Label>
+                    <Input name="name" defaultValue={row.original.name || ""} className="mt-1" />
+                  </div>
+                  <div>
+                    <Label>Description</Label>
+                    <Input name="description" defaultValue={row.original.description || ""} className="mt-1" />
+                  </div>
+                  <div>
+                    <Label>Quantity</Label>
+                    <Input type="number" name="qty" defaultValue={row.original.qty} className="mt-1" />
+                  </div>
+                  <div>
+                    <Label>Status</Label>
+                    <Select name="status" defaultValue={row.original.status.toString()}>
+                      <SelectTrigger className="mt-1">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1">Available</SelectItem>
+                        <SelectItem value="2">In Use</SelectItem>
+                        <SelectItem value="3">Maintenance</SelectItem>
+                        <SelectItem value="4">Retired</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <DrawerFooter className="pt-2">
+                  <Button onClick={async (e) => {
+                    const drawerContent = (e.currentTarget as HTMLElement).closest('[role="dialog"]');
+                    if (drawerContent) {
+                      const nameInput = drawerContent.querySelector('input[name="name"]') as HTMLInputElement;
+                      const descInput = drawerContent.querySelector('input[name="description"]') as HTMLInputElement;
+                      const qtyInput = drawerContent.querySelector('input[name="qty"]') as HTMLInputElement;
+                      const statusSelect = drawerContent.querySelector('[name="status"]') as HTMLElement;
+
+                      const formData = new FormData();
+                      formData.set("name", nameInput?.value || "");
+                      formData.set("description", descInput?.value || "");
+                      formData.set("qty", qtyInput?.value || "0");
+
+                      const statusValue = statusSelect?.getAttribute("data-state") || row.original.status.toString();
+                      formData.set("status", statusValue);
+
+                      await edit(formData);
+                      setOpenEdit(false);
+                    }
+                  }}>Save Changes</Button>
+                  <DrawerClose asChild>
+                    <Button variant="outline">Cancel</Button>
+                  </DrawerClose>
+                </DrawerFooter>
+              </DrawerContent>
+            </Drawer>
+            <Drawer open={openQr} onOpenChange={setOpenQr}>
+              {/* tombol qr */}
+              <DrawerTrigger asChild>
+                <DropdownMenuItem onSelect={(event) => event.preventDefault()}>
+                  <QrCode className="mr-2 h-4 w-4" />QR Code</DropdownMenuItem>
+              </DrawerTrigger>
+              <DrawerContent>
+                <DrawerHeader className="text-left">
+                  <DrawerTitle>Asset QR Code</DrawerTitle>
+                  <DrawerDescription>
+                    QR code for asset {row.original.asset_serial}
+                  </DrawerDescription>
+                </DrawerHeader>
+                <div className="flex items-center justify-center p-4">
+                  {row.original.qr_code_path ? (
+                    <img
+                      src={row.original.qr_code_path}
+                      alt="QR Code"
+                      className="w-48 h-48"
+                      onClick={qr}
+                    />
+                  ) : (
+                    <p className="text-gray-500">QR Code not available</p>
+                  )}
+                </div>
+                <DrawerFooter className="pt-2">
+                  <DrawerClose asChild>
+                    <Button variant="outline">Close</Button>
+                  </DrawerClose>
+                </DrawerFooter>
+              </DrawerContent>
+            </Drawer>
+            <DropdownMenuSeparator />
+            {/* tombol delete */}
+            <DropdownMenuItem variant="destructive" onClick={deleteSelection} onSelect={(event) => event.preventDefault()}>
+              <Trash2 className="mr-2 h-4 w-4" />Delete</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
+    }
   }
 ]
 
