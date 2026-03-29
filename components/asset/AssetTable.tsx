@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/navigation"
 import {
   closestCenter,
   DndContext,
@@ -370,7 +371,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
                   <DialogHeader className="text-left">
                     <DialogTitle>Asset QR Code</DialogTitle>
                     <DialogDescription>
-                      QR code for asset {row.original.asset_serial}
+                      QR code for {row.original.name}
                     </DialogDescription>
                   </DialogHeader>
                   <div className="flex items-center justify-center p-4">
@@ -492,7 +493,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
                 <DrawerHeader className="text-left">
                   <DrawerTitle>Asset QR Code</DrawerTitle>
                   <DrawerDescription>
-                    QR code for asset {row.original.asset_serial}
+                    QR code for asset {row.original.name}
                   </DrawerDescription>
                 </DrawerHeader>
                 <div className="flex items-center justify-center p-4">
@@ -732,7 +733,8 @@ export function AssetTable({
           </DropdownMenu>
           <Button variant="outline" size="sm">
             <IconPlus />
-            <span className="hidden lg:inline">Add Section</span>
+            <a href="/admin/assetManagement/dataAsset/addSection">Add Section</a>
+            {/* <span className="hidden lg:inline">Add Section</span> */}
           </Button>
         </div>
         <div className="overflow-hidden rounded-lg border">

@@ -1,9 +1,9 @@
-"use client"
+// "use client"
 
 import { toast } from "sonner"
 import { z } from "zod"
 
-const assetSchema = z.object({
+const schema = z.object({
   asset_serial: z.string(),
   name: z.string().nullable(),
   description: z.string().nullable(),
@@ -13,10 +13,66 @@ const assetSchema = z.object({
   status: z.number(),
 })
 
-type Asset = z.infer<typeof assetSchema> & {
+type Asset = z.infer<typeof schema> & {
   category: { category_name: string }
   location: { location_name: string }
   qr_code_path: string | null
+}
+
+export type InsertFormData = {
+  serial: string;
+  name?: string;
+  description?: string;
+  category_id: string;
+  location_id: string;
+  qty: number;
+  purcase_date: string;
+  purcase_price: number;
+  status: "1" | "2" | "3" | "4";
+};
+
+export function handleInsert(formData: InsertFormData) {
+  return async () => {
+    try {
+      const response = await fetch("/api/asset/detail", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          asset_serial: formData.serial,
+          name: formData.name,
+          description: formData.description,
+          category_id: formData.category_id,
+          location_id: formData.location_id,
+          qty: formData.qty,
+          purcase_date: formData.purcase_date,
+          purcase_price: formData.purcase_price,
+          status: Number(formData.status),
+        }),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        toast.error(error.error || "Gagal menambah asset")
+        return
+      }
+
+      const created = await response.json()
+      toast.success("Asset berhasil ditambahkan", {
+        description: (
+          <div className="flex flex-col gap-2">
+            <p>Serial: {created.data.asset_serial}</p>
+            <p>QR sudah di-generate dan tersimpan.</p>
+          </div>
+        ),
+      })
+
+      return created
+    } catch (error) {
+      console.error("Error creating asset:", error)
+      toast.error("Terjadi kesalahan saat menambah asset")
+      throw error
+    }
+  }
 }
 
 export function handleEdit(asset: Asset) {

@@ -53,6 +53,124 @@ export async function GET() {
   }
 }
 
+import QRCode from "qrcode"
+
+export async function POST(request: Request) {
+  try {
+    const session = await auth()
+
+    if (!session?.user?.role || session.user.role !== "ADMIN") {
+      return NextResponse.json(
+        { error: "Unauthorized - Admin access required" },
+        { status: 403 }
+      )
+    }
+
+    const body = await request.json()
+    const {
+      asset_serial,
+      name,
+      description,
+      category_id,
+      qty,
+      purcase_date,
+      purcase_price,
+      status,
+      location_id,
+    } = body
+
+    if (!asset_serial) {
+      return NextResponse.json(
+        { error: "asset_serial is required" },
+        { status: 400 }
+      )
+    }
+
+    const category =
+      category_id || ""
+        ? await prisma.category.findUnique({ where: { category_id: category_id } })
+        : await prisma.category.findFirst()
+
+    if (!category) {
+      return NextResponse.json(
+        { error: "Category not found. Please create a category first." },
+        { status: 400 }
+      )
+    }
+
+    const location =
+      location_id || ""
+        ? await prisma.location.findUnique({ where: { location_id: location_id } })
+        : await prisma.location.findFirst()
+
+    if (!location) {
+      return NextResponse.json(
+        { error: "Location not found. Please create a location first." },
+        { status: 400 }
+      )
+    }
+
+    const now = new Date()
+    const purcaseDateValue = purcase_date ? new Date(purcase_date) : now
+
+    const newAsset = await prisma.asset.create({
+      data: {
+        asset_serial,
+        name: name || "",
+        description: description || "",
+        category_id: category.category_id,
+        qty: Number(qty ?? 1),
+        purcase_date: purcaseDateValue,
+        purcase_price: purcase_price === null || purcase_price === undefined ? null : Number(purcase_price),
+        status: Number(status ?? 1),
+        location_id: location.location_id,
+        qr_code_path: "",
+      },
+    })
+
+    const qrPayload = {
+      asset_serial: newAsset.asset_serial,
+      name: newAsset.name,
+      description: newAsset.description,
+      category_name: category.category_name,
+      qty: newAsset.qty,
+      purcase_date: newAsset.purcase_date.toISOString(),
+      purcase_price: newAsset.purcase_price,
+      status: newAsset.status,
+      location_name: location.location_name,
+    }
+
+    const qrText = JSON.stringify(qrPayload)
+    const qrCodeDataUrl = await QRCode.toDataURL(qrText, {
+      errorCorrectionLevel: "H",
+      type: "image/png",
+      margin: 1,
+      width: 300,
+    })
+
+    const updatedAsset = await prisma.asset.update({
+      where: { asset_serial: newAsset.asset_serial },
+      data: { qr_code_path: qrCodeDataUrl },
+      include: {
+        category: {
+          select: { category_name: true },
+        },
+        location: {
+          select: { location_name: true },
+        },
+      },
+    })
+
+    return NextResponse.json({ success: true, data: updatedAsset })
+  } catch (error) {
+    console.error("Error creating asset:", error)
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
+  }
+}
+
 export async function PATCH(request: Request) {
   try {
     const session = await auth()
