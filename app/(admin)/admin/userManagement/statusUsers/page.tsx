@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { UserTable } from "@/components/admin/UserManagement/UserTable";
+import { UserTable } from "@/components/admin/UserTable";
 import { prisma } from "@/lib/prisma";
 
 async function getUsers() {
