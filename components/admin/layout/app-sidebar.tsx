@@ -2,166 +2,128 @@
 
 import * as React from "react"
 import {
-  AudioWaveform,
-  Boxes,
-  Command,
-  House,
-  GalleryVerticalEnd,
-  Settings2,
-  FileUser,
-  Package,
-} from "lucide-react"
+  IconHelp,
+  IconInnerShadowTop,
+  IconReport,
+  IconSearch,
+  IconSettings,
+  IconHome,
+  IconUsers,
+  IconBox,
+  IconQrcode,
+  IconLocation,
+  IconCategory
+} from "@tabler/icons-react"
 
+import { NavMore } from "@/components/admin/layout/nav-more"
+import { NavInventory } from "@/components/admin/layout/nav-inventory"
 import { NavMain } from "@/components/admin/layout/nav-main"
-import { NavProjects } from "@/components/admin/layout/nav-projects"
+import { NavSecondary } from "@/components/admin/layout/nav-secondary"
 import { NavUser } from "@/components/admin/layout/nav-user"
-import { TeamSwitcher } from "@/components/admin/layout/team-switcher"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarRail,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { url } from "inspector"
-import { is, tr } from "zod/v4/locales"
+import { fromJSONSchema } from "zod"
 
-// This is sample data.
 const data = {
   user: {
-    name: "",
-    email: "",
-    avatar: "",
+    name: "shadcn",
+    email: "m@example.com",
+    avatar: "/avatars/shadcn.jpg",
   },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
-  projects: [
-    {
-      name: "Dashboard",
-      url: "/admin/dashboard",
-      icon: House,
-    }
-  ],
   navMain: [
     {
-      title: "User Management",
-      url: "#",
-      icon: FileUser,
-      isActive: true,
-      items: [
-        {
-          title: "Status Users",
-          url: "/admin/userManagement/statusUsers",
-        },
-        {
-          title: "Roles & Permissions",
-          url: "/admin/userManagement/permission",
-        },
-        {
-          title: "Activity Logs",
-          url: "/admin/userManagement/activityLog",
-        },
-      ],
+      title: "Dashboard",
+      url: "/admin/dashboard",
+      icon: IconHome,
     },
     {
-      title: "Asset Management",
-      url: "#",
-      icon: Boxes,
-      isActive: true,
-      items: [
-        {
-          title: "Data Assets",
-          url: "/admin/assetManagement/dataAsset",
-        },
-        {
-          title: "Scan",
-          url: "/admin/assetManagement/scanPage",
-        },
-        {
-          title: "Reports Maintenance",
-          url: "/admin/assetManagement/assetMaintenance",
-        },
-      ],
-    },
-    {
-      title: "Inventory Management",
-      url: "#",
-      icon: Package,
-      isActive: true,
-      items: [
-        {
-          title: "Data Items",
-          url: "/admin/inventoryManagement/dataItem",
-        },
-        {
-          title: "Scan",
-          url: "#",
-        },
-        {
-          title: "Transactions",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "More",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "Location",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
+      title: "Users",
+      url: "/admin/userManagement/statusUsers",
+      icon: IconUsers,
     },
   ],
+  navSecondary: [
+    {
+      title: "Settings",
+      url: "#",
+      icon: IconSettings,
+    },
+    {
+      title: "Get Help",
+      url: "#",
+      icon: IconHelp,
+    },
+    {
+      title: "Search",
+      url: "#",
+      icon: IconSearch,
+    },
+  ],
+  inventory: [
+    {
+      name: "Data Assets",
+      url: "/admin/assetManagement/dataAsset",
+      icon: IconBox,
+    },
+    {
+      name: "Data Items",
+      url: "/admin/inventoryManagement/dataItem",
+      icon: IconReport,
+    },
+    {
+      name: "Scan QR Code",
+      url: "/admin/assetManagement/scanPage",
+      icon: IconQrcode,
+    },
+  ],
+  more: [
+    {
+      name: "Location",
+      url: "#",
+      icon: IconLocation,
+    },
+    {
+      name: "Category",
+      url: "#",
+      icon: IconCategory,
+    },
+  ]
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              className="data-[slot=sidebar-menu-button]:p-1.5!"
+            >
+              <a href="#">
+                <IconInnerShadowTop className="size-5!" />
+                <span className="text-base font-semibold">Acme Inc.</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavProjects projects={data.projects} />
         <NavMain items={data.navMain} />
+        <NavInventory items={data.inventory} />
+        <NavMore items={data.more} ></NavMore>
+        <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
       </SidebarFooter>
-      <SidebarRail />
     </Sidebar>
   )
 }

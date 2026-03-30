@@ -5,7 +5,7 @@ import {
   Bell,
   ChevronsUpDown,
   LogOut,
-  Settings,
+  Edit,
 } from "lucide-react"
 
 import {
@@ -119,12 +119,8 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Settings />
-                Setting
+                <Edit />
+                Edit Account
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell />
