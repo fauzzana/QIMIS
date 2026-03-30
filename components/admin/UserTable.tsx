@@ -48,7 +48,6 @@ import {
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 
 import {
@@ -69,6 +68,17 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+
+import { useMediaQuery } from "@/hooks/use-media-query"
+
+import {
   MoreHorizontal,
   Search,
   UserCheck,
@@ -86,6 +96,7 @@ import {
 } from "@/components/ui/tabs"
 
 import { z } from "zod"
+import { handleEdit } from "./ActionUsers"
 
 export const schema = z.object({
   id: z.string(),
@@ -97,101 +108,6 @@ export const schema = z.object({
     depart_name: z.string().nullable(),
   }).nullable(),
 })
-
-const columns: ColumnDef<z.infer<typeof schema>>[] = [
-  {
-    id: "drag",
-    header: () => null,
-    cell: ({ row }) => <DragHandle id={row.original.id} />,
-  },
-  {
-    accessorKey: "name",
-    header: "Name",
-    cell: ({ row }) => {
-      return (
-        <div className="flex items-center gap-2">
-          <span>{row.original.name || "N/A"}</span>
-        </div>)
-    }
-  },
-  {
-    accessorKey: "email",
-    header: "Email",
-    cell: ({ row }) => {
-      return (
-        <div className="flex items-center gap-2">
-          <span>{row.original.email || "N/A"}</span>
-        </div>)
-    }
-  },
-  {
-    accessorKey: "role",
-    header: "Role",
-    cell: ({ row }) => {
-      const getRoleBadgeVariant = (role: string) => {
-        switch (role) {
-          case "ADMIN":
-            return "destructive"
-          case "MANAGEMENT":
-            return "default"
-          case "STAFF":
-            return "secondary"
-          default: return "outline"
-        }
-      }
-
-      return (
-        <Badge variant={getRoleBadgeVariant(row.original.role)}>{row.original.role}</Badge>
-      )
-    }
-  },
-  {
-    accessorKey: "department.depart_name",
-    header: "Department",
-    cell: ({ row }) => {
-      return (
-        <div className="flex items-center gap-2">
-          <span>{row.original.department?.depart_name || "N/A"}</span>
-        </div>)
-    }
-  },
-  {
-    accessorKey: "userId",
-    header: "User ID",
-    cell: ({ row }) => {
-      return (
-        <div className="flex items-center gap-2">
-          <span>{row.original.userId || "N/A"}</span>
-        </div>)
-    }
-  },
-  {
-    id: "actions",
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon">
-            <MoreHorizontal />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem>
-            <Edit className="mr-2 h-4 w-4" /> Edit
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <UserCheck className="mr-2 h-4 w-4" /> Activate
-          </DropdownMenuItem>
-          <DropdownMenuItem className="text-destructive">
-            <UserX className="mr-2 h-4 w-4" /> Deactivate
-          </DropdownMenuItem>
-          <DropdownMenuItem className="text-destructive">
-            <Trash2 className="mr-2 h-4 w-4" /> Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
-  }
-]
 
 function DragHandle({ id }: { id: string }) {
   const { attributes, listeners } = useSortable({ id })
@@ -237,6 +153,7 @@ function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
 
 export function UserTable({ data: initialData }: { data: z.infer<typeof schema>[] }) {
   const [data, setData] = React.useState(() => initialData)
+  const [departments, setDepartments] = React.useState<{ depart_id: number; depart_name: string }[]>([])
   const [globalFilter, setGlobalFilter] = React.useState("")
   const [rowSelection, setRowSelection] = React.useState({})
   const [roleFilter, setRoleFilter] = React.useState("all")
@@ -256,6 +173,197 @@ export function UserTable({ data: initialData }: { data: z.infer<typeof schema>[
     useSensor(TouchSensor, {}),
     useSensor(KeyboardSensor, {})
   )
+
+  React.useEffect(() => {
+    fetch('/api/department')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setDepartments(data.data)
+        }
+      })
+      .catch(error => console.error('Error fetching departments:', error))
+  }, [])
+
+  const columns = React.useMemo<ColumnDef<z.infer<typeof schema>>[]>(() => [
+    {
+      id: "drag",
+      header: () => null,
+      cell: ({ row }) => <DragHandle id={row.original.id} />,
+    },
+    {
+      accessorKey: "name",
+      header: "Name",
+      cell: ({ row }) => {
+        return (
+          <div className="flex items-center gap-2">
+            <span>{row.original.name || "N/A"}</span>
+          </div>)
+      }
+    },
+    {
+      accessorKey: "email",
+      header: "Email",
+      cell: ({ row }) => {
+        return (
+          <div className="flex items-center gap-2">
+            <span>{row.original.email || "N/A"}</span>
+          </div>)
+      }
+    },
+    {
+      accessorKey: "role",
+      header: "Role",
+      cell: ({ row }) => {
+        const getRoleBadgeVariant = (role: string) => {
+          switch (role) {
+            case "ADMIN":
+              return "destructive"
+            case "MANAGEMENT":
+              return "default"
+            case "STAFF":
+              return "secondary"
+            default: return "outline"
+          }
+        }
+
+        return (
+          <Badge variant={getRoleBadgeVariant(row.original.role)}>{row.original.role}</Badge>
+        )
+      }
+    },
+    {
+      accessorKey: "department.depart_name",
+      header: "Department",
+      cell: ({ row }) => {
+        return (
+          <div className="flex items-center gap-2">
+            <span>{row.original.department?.depart_name || "N/A"}</span>
+          </div>)
+      }
+    },
+    {
+      accessorKey: "userId",
+      header: "User ID",
+      cell: ({ row }) => {
+        return (
+          <div className="flex items-center gap-2">
+            <span>{row.original.userId || "N/A"}</span>
+          </div>)
+      }
+    },
+    {
+      id: "actions",
+      cell: ({ row }) => {
+        const [openEdit, setOpenEdit] = React.useState(false)
+        const [editName, setEditName] = React.useState(row.original.name || "")
+        const [editRole, setEditRole] = React.useState(row.original.role)
+        const [editDepartment, setEditDepartment] = React.useState(row.original.department?.depart_name || "")
+        const isDesktop = useMediaQuery("(min-width: 768px)")
+
+        const edit = handleEdit({
+          ...row.original,
+          department: {
+            department_name: editDepartment,
+          },
+        } as any)
+
+        if (isDesktop) {
+          return (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <MoreHorizontal />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <Dialog open={openEdit} onOpenChange={setOpenEdit}>
+                  {/* ttombol edit */}
+                  <DialogTrigger asChild>
+                    <DropdownMenuItem onSelect={(event) => event.preventDefault()}>
+                      <Edit className="mr-2 h-4 w-4" /> Edit
+                    </DropdownMenuItem>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Edit User</DialogTitle>
+                      <DialogDescription>
+                        edit the user information here.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div>
+                        <Label>ID</Label>
+                        <Input disabled value={row.original.id} className="mt-1" />
+                      </div>
+                      <div>
+                        <Label>Name</Label>
+                        <Input name="name" value={editName} onChange={(e) => setEditName(e.target.value)} className="mt-1" />
+                      </div>
+                      <div>
+                        <Label>Email</Label>
+                        <Input disabled name="email" value={row.original.email || ""} className="mt-1" />
+                      </div>
+                      <div>
+                        <Label>Role</Label>
+                        <Select value={editRole} onValueChange={(value: "ADMIN" | "MANAGEMENT" | "STAFF") => setEditRole(value)}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="ADMIN">ADMIN</SelectItem>
+                            <SelectItem value="MANAGEMENT">MANAGEMENT</SelectItem>
+                            <SelectItem value="STAFF">STAFF</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label>Department</Label>
+                        <Select value={editDepartment} onValueChange={setEditDepartment}>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="Select department" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {departments.map((dept) => (
+                              <SelectItem key={dept.depart_id} value={dept.depart_name}>
+                                {dept.depart_name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button variant="outline" onClick={() => setOpenEdit(false)}>Cancel</Button>
+                      <Button onClick={async (e) => {
+                        const updateData = {
+                          name: editName,
+                          role: editRole,
+                          department_name: editDepartment,
+                        }
+                        await edit(updateData);
+                        setOpenEdit(false);
+                      }}>Save Changes</Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+
+                <DropdownMenuItem>
+                  <UserCheck className="mr-2 h-4 w-4" /> Activate
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-destructive">
+                  <UserX className="mr-2 h-4 w-4" /> Deactivate
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-destructive">
+                  <Trash2 className="mr-2 h-4 w-4" /> Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )
+        }
+      }
+    }
+  ], [departments])
 
   const dataIds = React.useMemo<UniqueIdentifier[]>(
     () => data?.map((item) => item.id),

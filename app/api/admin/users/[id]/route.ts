@@ -2,57 +2,21 @@ import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
 import { NextResponse } from "next/server"
 
-export async function GET() {
-  try {
-    const session = await auth()
-    
-    if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      )
-    }
-
-    // Fetch user dari database berdasarkan email
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        image: true,
-        role: true,
-      },
-    })
-
-    if (!user) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
-      )
-    }
-
-    return NextResponse.json(user)
-  } catch (error) {
-    console.error("Error fetching user:", error)
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    )
-  }
-}
-
-export async function PATCH(request: Request) {
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const session = await auth()
 
-    if (!session?.user?.email) {
+    if (!session?.user?.role || session.user.role !== "ADMIN") {
       return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
+        { error: "Unauthorized - Admin access required" },
+        { status: 403 }
       )
     }
 
+    const { id } = await params
     const body = await request.json()
     const { name, role, department_name } = body
 
@@ -68,7 +32,7 @@ export async function PATCH(request: Request) {
 
     // Update user
     const updatedUser = await prisma.user.update({
-      where: { email: session.user.email },
+      where: { id },
       data: {
         name,
         role,
@@ -79,6 +43,7 @@ export async function PATCH(request: Request) {
         name: true,
         email: true,
         role: true,
+        userId: true,
         department: {
           select: {
             depart_name: true,
