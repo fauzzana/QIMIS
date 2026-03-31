@@ -86,12 +86,12 @@ const data = {
   more: [
     {
       name: "Location",
-      url: "#",
+      url: "/admin/more/location",
       icon: IconLocation,
     },
     {
       name: "Category",
-      url: "#",
+      url: "/admin/more/catergory",
       icon: IconCategory,
     },
   ]
