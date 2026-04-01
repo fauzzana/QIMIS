@@ -74,7 +74,7 @@ const data = {
     },
     {
       name: "Data Items",
-      url: "/admin/inventoryManagement/dataItem",
+      url: "/admin/inventoryManagement",
       icon: IconPackages,
     },
     {

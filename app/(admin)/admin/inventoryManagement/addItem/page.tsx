@@ -35,7 +35,7 @@ export default async function addItemPage() {
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href="/admin/inventoryManagement/dataItem">Data Item</BreadcrumbLink>
+                <BreadcrumbLink href="/admin/inventoryManagement">Data Item</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>

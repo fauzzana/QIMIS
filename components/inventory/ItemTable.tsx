@@ -638,7 +638,7 @@ export function ItemTable({
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Link href="/admin/inventoryManagement/dataItem/addItem">
+          <Link href="/admin/inventoryManagement/addItem">
             <Button variant="outline" size="sm">
               <IconPlus />
               <span className="hidden lg:inline">Add Item</span>
