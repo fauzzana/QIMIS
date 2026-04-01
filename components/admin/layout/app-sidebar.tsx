@@ -91,7 +91,7 @@ const data = {
     },
     {
       name: "Category",
-      url: "/admin/more/catergory",
+      url: "/admin/more/category",
       icon: IconCategory,
     },
   ]
