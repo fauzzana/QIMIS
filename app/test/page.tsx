@@ -1,29 +1,51 @@
-// app/products/page.tsx
-import { PrismaClient } from '@prisma/client'
-import Image from 'next/image'
+'use client';
+import { useEffect, useState } from 'react';
+import { Html5QrcodeScanner } from 'html5-qrcode';
 
-const prisma = new PrismaClient()
+const QRScanner = () => {
+  const [scanResult, setScanResult] = useState<string | null>(null);
 
-export default async function ProductPage() {
-  // Mengambil semua data produk dari database
-  const products = await prisma.asset.findMany()
+  useEffect(() => {
+    // Inisialisasi scanner
+    const scanner = new Html5QrcodeScanner('reader', {
+      qrbox: {
+        width: 250,
+        height: 250,
+      },
+      fps: 5,
+    }, false);
+
+    scanner.render(onScanSuccess, onScanError);
+
+    function onScanSuccess(decodedText: string, decodedResult: any) {
+      scanner.clear(); // Hentikan scanner setelah berhasil
+      setScanResult(decodedText);
+      console.log(decodedResult);
+    }
+
+    function onScanError(err: any) {
+      console.warn(err);
+    }
+
+    // Cleanup function
+    return () => {
+      scanner.clear().catch(error => {
+        console.error("Gagal menghentikan scanner", error);
+      });
+    };
+  }, []);
 
   return (
-    <div className="grid grid-cols-3 gap-4">
-      {products.map((product) => (
-        <div key={product.asset_serial} className="border p-4">
-          <h2>{product.name}</h2>
-          {/* Menampilkan gambar menggunakan komponen Next.js Image */}
-          <div className="relative h-48 w-full">
-            <Image
-              src={product.image || '/placeholder.png'} // Gunakan gambar placeholder jika tidak ada
-              alt={product.name}
-              fill
-              className="object-cover"
-            />
-          </div>
+    <div>
+      {scanResult ? (
+        <div>
+          Success: <a href={scanResult}>{scanResult}</a>
         </div>
-      ))}
+      ) : (
+        <div id="reader"></div>
+      )}
     </div>
-  )
-}
+  );
+};
+
+export default QRScanner;

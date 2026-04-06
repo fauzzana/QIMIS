@@ -1,4 +1,5 @@
-import { Badge } from "@/components/ui/badge"
+"use client"
+
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -8,9 +9,44 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import { IconAsset, IconPackages } from "@tabler/icons-react"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { QRScannerAsset, QRScannerItem } from "./Scanner"
 
 export function CardImage() {
+  const router = useRouter()
+  const [isAssetDialogOpen, setIsAssetDialogOpen] = useState(false)
+  const [isItemDialogOpen, setIsItemDialogOpen] = useState(false)
+
+  const handleAssetScan = (result: string | null) => {
+    if (result && result !== "undefined") {
+      setIsAssetDialogOpen(false)
+      router.push(`/admin/assetManagement/dataAsset/${encodeURIComponent(result)}`)
+      return
+    }
+
+    console.warn("Invalid asset scan result", result)
+  }
+
+  const handleItemScan = (result: string | null) => {
+    if (result && result !== "undefined") {
+      setIsItemDialogOpen(false)
+      router.push(`/admin/inventoryManagement/item/${encodeURIComponent(result)}`)
+      return
+    }
+
+    console.warn("Invalid item scan result", result)
+  }
+
   return (
     <div className="flex flex-row items-center gap-4 px-4 py-6">
       <Card className="relative mx-auto w-full max-w-sm pt-0">
@@ -25,7 +61,21 @@ export function CardImage() {
           </CardDescription>
         </CardHeader>
         <CardFooter>
-          <Button className="w-full cursor-pointer">SCAN QR</Button>
+          <Dialog open={isAssetDialogOpen} onOpenChange={setIsAssetDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="w-full cursor-pointer">SCAN QR</Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle>Scan Asset QR Code</DialogTitle>
+                <DialogDescription>
+                  Point your camera at the asset's QR code to scan.
+                </DialogDescription>
+              </DialogHeader>
+              <div id="reader-asset" className="w-full min-h-96"></div>
+              <QRScannerAsset onScan={handleAssetScan} elementId="reader-asset" />
+            </DialogContent>
+          </Dialog>
         </CardFooter>
       </Card>
       <Card className="relative mx-auto w-full max-w-sm pt-0">
@@ -40,7 +90,21 @@ export function CardImage() {
           </CardDescription>
         </CardHeader>
         <CardFooter>
-          <Button className="w-full cursor-pointer">SCAN QR</Button>
+          <Dialog open={isItemDialogOpen} onOpenChange={setIsItemDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="w-full cursor-pointer">SCAN QR</Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle>Scan Item QR Code</DialogTitle>
+                <DialogDescription>
+                  Point your camera at the item's QR code to scan.
+                </DialogDescription>
+              </DialogHeader>
+              <div id="reader-item" className="w-full min-h-96"></div>
+              <QRScannerItem onScan={handleItemScan} elementId="reader-item" />
+            </DialogContent>
+          </Dialog>
         </CardFooter>
       </Card>
     </div>
