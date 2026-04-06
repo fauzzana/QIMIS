@@ -11,6 +11,7 @@ const schema = z.object({
   purcase_date: z.date(),
   purcase_price: z.number().nullable(),
   status: z.number(),
+  image: z.string().nullable(),
 })
 
 type Asset = z.infer<typeof schema> & {
@@ -29,6 +30,7 @@ export type InsertFormData = {
   purcase_date: string;
   purcase_price: number;
   status: "1" | "2" | "3" | "4";
+  image?: string;
 };
 
 export function handleInsert(formData: InsertFormData) {
@@ -47,6 +49,7 @@ export function handleInsert(formData: InsertFormData) {
           purcase_date: formData.purcase_date,
           purcase_price: formData.purcase_price,
           status: Number(formData.status),
+          image: formData.image,
         }),
       })
 

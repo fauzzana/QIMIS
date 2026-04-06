@@ -39,6 +39,7 @@ const formSchema = z.object({
   }),
   purcase_price: z.coerce.number().min(0, "Purchase price tidak boleh negatif"),
   status: z.enum(["1", "2", "3", "4"]),
+  image: z.string().optional(),
 }) satisfies z.ZodType<FormData>;
 
 type Category = { category_id: string; category_name: string }
@@ -57,6 +58,7 @@ export function AddAssetForm() {
       purcase_date: new Date().toISOString().substring(0, 10),
       purcase_price: 0,
       status: "1",
+      image: "",
     },
   })
 
@@ -286,6 +288,35 @@ export function AddAssetForm() {
                         <SelectItem value="4">Retired</SelectItem>
                       </SelectContent>
                     </Select>
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+            </div>
+
+            <div className="p-2 mb-2">
+              <Controller
+                name="image"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel>Image</FieldLabel>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0]
+                        if (file) {
+                          const reader = new FileReader()
+                          reader.onloadend = () => {
+                            field.onChange(reader.result)
+                          }
+                          reader.readAsDataURL(file)
+                        }
+                      }}
+                    />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}

@@ -33,6 +33,7 @@ export async function GET() {
           }
         },
         qr_code_path: true,
+        image: true,
       },
       orderBy: {
         purcase_date: "desc",
@@ -77,6 +78,7 @@ export async function POST(request: Request) {
       purcase_price,
       status,
       location_id,
+      image,
     } = body
 
     if (!asset_serial) {
@@ -125,22 +127,12 @@ export async function POST(request: Request) {
         status: Number(status ?? 1),
         location_id: location.location_id,
         qr_code_path: "",
+        image: image || "",
       },
     })
 
-    const qrPayload = {
-      asset_serial: newAsset.asset_serial,
-      name: newAsset.name,
-      description: newAsset.description,
-      category_name: category.category_name,
-      qty: newAsset.qty,
-      purcase_date: newAsset.purcase_date.toISOString(),
-      purcase_price: newAsset.purcase_price,
-      status: newAsset.status,
-      location_name: location.location_name,
-    }
-
-    const qrText = JSON.stringify(qrPayload)
+    // QR Code hanya berisi asset_serial (data kecil)
+    const qrText = newAsset.asset_serial
     const qrCodeDataUrl = await QRCode.toDataURL(qrText, {
       errorCorrectionLevel: "H",
       type: "image/png",
@@ -191,6 +183,7 @@ export async function PATCH(request: Request) {
       purcase_date,
       purcase_price,
       status,
+      image,
     } = body
 
     if (!asset_serial) {
@@ -213,6 +206,7 @@ export async function PATCH(request: Request) {
           ? { purcase_price: purcase_price === null ? null : Number(purcase_price) }
           : {}),
         ...(status !== undefined ? { status: Number(status) } : {}),
+        ...(image !== undefined ? { image } : {}),
       },
     })
 

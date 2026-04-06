@@ -49,7 +49,6 @@ import {
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 
 import {
@@ -124,6 +123,7 @@ export const schema = z.object({
     location_name: z.string(),
   }),
   qr_code_path: z.string().nullable(),
+  image: z.string().nullable(),
 })
 
 const columns: ColumnDef<z.infer<typeof schema>>[] = [
@@ -133,28 +133,26 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     cell: ({ row }) => <DragHandle id={row.original.asset_serial} />,
   },
   {
-    id: "select",
-    header: ({ table }) => (
-      <div className="flex items-center justify-center">
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div className="flex items-center justify-center">
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      </div>
-    ),
+    id: "image",
+    header: "Image",
+    cell: ({ row }) => {
+      const image = row.original.image
+      return (
+        <div className="flex items-center justify-center">
+          {image ? (
+            <img
+              src={image}
+              alt={row.original.name || "Asset Image"}
+              className="h-12 w-12 rounded object-cover"
+            />
+          ) : (
+            <div className="h-12 w-12 rounded bg-muted flex items-center justify-center text-xs text-muted-foreground">
+              No Image
+            </div>
+          )}
+        </div>
+      )
+    },
     enableSorting: false,
     enableHiding: false,
   },
@@ -731,11 +729,12 @@ export function AssetTable({
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button variant="outline" size="sm">
-            <IconPlus />
-            <a href="/admin/assetManagement/dataAsset/addSection">Add Section</a>
-            {/* <span className="hidden lg:inline">Add Section</span> */}
-          </Button>
+          <a href="/admin/assetManagement/dataAsset/addSection">
+            <Button variant="outline" size="sm" className="cursor-pointer">
+              <IconPlus />
+              Add Section
+            </Button>
+          </a>
         </div>
         <div className="overflow-hidden rounded-lg border">
           <DndContext

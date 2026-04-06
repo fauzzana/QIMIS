@@ -34,6 +34,7 @@ async function getAssets() {
         }
       },
       qr_code_path: true,
+      image: true,
     },
     orderBy: {
       purcase_date: "desc",

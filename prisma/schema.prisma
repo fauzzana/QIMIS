@@ -122,6 +122,7 @@ model Asset {
   purcase_price Int?
   status        Int
   qr_code_path  String
+  image         String?
 
   category Category @relation(fields: [category_id], references: [category_id])
   location Location @relation(fields: [location_id], references: [location_id])
