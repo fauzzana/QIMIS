@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import Link from "next/navigation"
+import Link from "next/link"
 import {
   closestCenter,
   DndContext,
@@ -96,7 +96,7 @@ import {
   QrCode,
   GripVertical,
   Wrench,
-  Bandage,
+  Eye,
 } from "lucide-react"
 
 import { IconLayoutColumns, IconPlus, IconChevronDown, IconChevronsLeft, IconChevronLeft, IconChevronRight, IconChevronsRight } from "@tabler/icons-react"
@@ -291,6 +291,12 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-32">
+              {/* tombol Detail */}
+              <DropdownMenuItem asChild>
+                <Link href={`/admin/assetManagement/dataAsset/${row.original.asset_serial}`} className="flex items-center gap-2">
+                  <Eye className="mr-2 h-4 w-4" />Detail
+                </Link>
+              </DropdownMenuItem>
               <Dialog open={openEdit} onOpenChange={setOpenEdit}>
                 {/* tombol edit */}
                 <DialogTrigger asChild>
@@ -411,6 +417,12 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-32">
+            {/* tombol Detail */}
+            <DropdownMenuItem asChild>
+              <Link href={`/admin/assetManagement/dataAsset/${row.original.asset_serial}`} className="flex items-center gap-2">
+                <Eye className="mr-2 h-4 w-4" />Detail
+              </Link>
+            </DropdownMenuItem>
             <Drawer open={openEdit} onOpenChange={setOpenEdit}>
               {/* tombol edit */}
               <DrawerTrigger asChild>
@@ -731,20 +743,20 @@ export function AssetTable({
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-          <a href="/admin/assetManagement/dataAsset/addSection">
+          <Link href="/admin/assetManagement/dataAsset/addSection">
             <Button variant="outline" size="sm" className="cursor-pointer">
               <IconPlus />
               Add Section
             </Button>
-          </a>
+          </Link>
         </div>
         <div className="items-baseline-last justify-end flex-wrap gap-2 md:flex">
-          <a href="/admin/assetManagement/dataAsset/assetMaintenance">
+          <Link href="/admin/assetManagement/dataAsset/assetMaintenance">
             <Button variant="destructive" size="sm" className="cursor-pointer">
               <Wrench />
               Asset Maintenance
             </Button>
-          </a>
+          </Link>
         </div>
         <div className="overflow-hidden rounded-lg border">
           <DndContext

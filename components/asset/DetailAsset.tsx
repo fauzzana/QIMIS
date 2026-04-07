@@ -31,7 +31,9 @@ export function DetailAsset({ asset }: DetailAssetProps) {
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 p-4">
       <Card className="md:col-span-2">
         <CardHeader>
-          <CardTitle>{asset.name}</CardTitle>
+          <CardTitle>
+            <h1 className="scroll-m-20 text-center text-2xl font-bold tracking-tight text-balance">{asset.name}</h1>
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
