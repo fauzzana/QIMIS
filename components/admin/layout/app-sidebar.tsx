@@ -29,6 +29,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import Image from "next/image"
 import { fromJSONSchema } from "zod"
 
 const data = {
@@ -108,8 +109,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
               <a href="#">
-                <IconInnerShadowTop className="size-5!" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+                <Image
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQ3a0IIFlETci2GfdYJrzQzro6EdP5-Ko5mw&s"
+                  width={180}
+                  height={180}
+                  alt="Acme Inc."
+                  className="size-5!"
+                />
+                <span className="text-base font-semibold">QIMIS</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
