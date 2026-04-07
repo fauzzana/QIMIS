@@ -95,6 +95,8 @@ import {
   Trash2,
   QrCode,
   GripVertical,
+  Wrench,
+  Bandage,
 } from "lucide-react"
 
 import { IconLayoutColumns, IconPlus, IconChevronDown, IconChevronsLeft, IconChevronLeft, IconChevronRight, IconChevronsRight } from "@tabler/icons-react"
@@ -733,6 +735,14 @@ export function AssetTable({
             <Button variant="outline" size="sm" className="cursor-pointer">
               <IconPlus />
               Add Section
+            </Button>
+          </a>
+        </div>
+        <div className="items-baseline-last justify-end flex-wrap gap-2 md:flex">
+          <a href="/admin/assetManagement/dataAsset/assetMaintenance">
+            <Button variant="destructive" size="sm" className="cursor-pointer">
+              <Wrench />
+              Asset Maintenance
             </Button>
           </a>
         </div>

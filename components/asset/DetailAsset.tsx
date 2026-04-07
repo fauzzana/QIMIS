@@ -28,7 +28,7 @@ interface DetailAssetProps {
 
 export function DetailAsset({ asset }: DetailAssetProps) {
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 p-4">
       <Card className="md:col-span-2">
         <CardHeader>
           <CardTitle>{asset.name}</CardTitle>
@@ -57,17 +57,17 @@ export function DetailAsset({ asset }: DetailAssetProps) {
           <div>
             <label className="font-semibold">Purchase Date:</label>
             <p className="text-muted-foreground">
-              {new Date(asset.purcase_date).toLocaleDateString()}
+              {new Date(asset.purcase_date).toDateString()}
             </p>
           </div>
           <div>
             <label className="font-semibold">Purchase Price:</label>
             <p className="text-muted-foreground">
-              {asset.purcase_price ? `$${asset.purcase_price}` : "N/A"}
+              {asset.purcase_price ? `Rp${asset.purcase_price}` : "N/A"}
             </p>
           </div>
           <div>
-            <label className="font-semibold">Status:</label>
+            <label className="font-semibold">Status: </label>
             <Badge variant={asset.status === 1 ? "default" : "secondary"}>
               {asset.status === 1 ? "Active" : "Inactive"}
             </Badge>
@@ -96,10 +96,8 @@ export function DetailAsset({ asset }: DetailAssetProps) {
             </div>
           )}
         </CardContent>
-      </Card>
 
-      {/* QR Code Card */}
-      <Card>
+        {/* QR Code Card */}
         <CardHeader>
           <CardTitle className="text-base">QR Code</CardTitle>
         </CardHeader>
@@ -119,6 +117,7 @@ export function DetailAsset({ asset }: DetailAssetProps) {
             </div>
           )}
         </CardContent>
+
       </Card>
     </div>
   );

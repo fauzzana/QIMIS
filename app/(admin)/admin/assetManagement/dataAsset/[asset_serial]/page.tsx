@@ -85,7 +85,7 @@ export default async function AssetDetailPage({ params }: PageProps) {
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
-                  <BreadcrumbLink href="/admin/assetManagement">Asset Management</BreadcrumbLink>
+                  <BreadcrumbLink href="/admin/assetManagement/dataAsset">Data Asset</BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
@@ -122,7 +122,7 @@ export default async function AssetDetailPage({ params }: PageProps) {
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href="/admin/assetManagement">Asset Management</BreadcrumbLink>
+                <BreadcrumbLink href="/admin/assetManagement/dataAsset">Data Asset</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
