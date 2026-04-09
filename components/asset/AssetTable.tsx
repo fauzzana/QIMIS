@@ -337,7 +337,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
                           <SelectItem value="1">Available</SelectItem>
                           <SelectItem value="2">In Use</SelectItem>
                           <SelectItem value="3">Maintenance</SelectItem>
-                          <SelectItem value="4">Retired</SelectItem>
+                          <SelectItem value="4">Unused</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -463,7 +463,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
                         <SelectItem value="1">Available</SelectItem>
                         <SelectItem value="2">In Use</SelectItem>
                         <SelectItem value="3">Maintenance</SelectItem>
-                        <SelectItem value="4">Retired</SelectItem>
+                        <SelectItem value="4">Unused</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -566,7 +566,7 @@ const getStatusBadgeVariant = (status: number) => {
     case 3:
       return "secondary" // MAINTENANCE
     case 4:
-      return "destructive" // RETIRED
+      return "destructive" // Unused
     default: return "outline"
   }
 }
@@ -580,7 +580,7 @@ const getStatusLabel = (status: number) => {
     case 3:
       return "Maintenance"
     case 4:
-      return "Retired"
+      return "Unused"
     default: return `Status ${status}`
   }
 }

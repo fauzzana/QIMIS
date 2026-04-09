@@ -261,7 +261,7 @@ export function AddAssetForm() {
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel>Purchase Price</FieldLabel>
-                    <Input {...field} type="number" min={0} step={0.01} />
+                    <Input {...field} type="text" placeholder="0" inputMode="numeric" onChange={(e) => field.onChange(e.target.value.replace(/\D/g, ''))} />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -285,7 +285,7 @@ export function AddAssetForm() {
                         <SelectItem value="1">Available</SelectItem>
                         <SelectItem value="2">In Use</SelectItem>
                         <SelectItem value="3">Maintenance</SelectItem>
-                        <SelectItem value="4">Retired</SelectItem>
+                        <SelectItem value="4">Unused</SelectItem>
                       </SelectContent>
                     </Select>
                     {fieldState.invalid && (
