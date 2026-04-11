@@ -396,6 +396,9 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
                 </DialogContent>
               </Dialog>
               <DropdownMenuSeparator />
+              {/* tombol request maintenance */}
+              <DropdownMenuItem onClick={() => alert("Request maintenance feature coming soon!")} onSelect={(event) => event.preventDefault()}>
+                <Wrench className="mr-2 h-4 w-4" />Maintain</DropdownMenuItem>
               {/* tombol delete */}
               <DropdownMenuItem variant="destructive" onClick={deleteSelection} onSelect={(event) => event.preventDefault()}>
                 <Trash2 className="mr-2 h-4 w-4" />Delete</DropdownMenuItem>
@@ -528,6 +531,9 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
               </DrawerContent>
             </Drawer>
             <DropdownMenuSeparator />
+            {/* tombol request maintenance */}
+            <DropdownMenuItem onClick={() => alert("Request maintenance feature coming soon!")} onSelect={(event) => event.preventDefault()}>
+              <Wrench className="mr-2 h-4 w-4" />Maintain</DropdownMenuItem>
             {/* tombol delete */}
             <DropdownMenuItem variant="destructive" onClick={deleteSelection} onSelect={(event) => event.preventDefault()}>
               <Trash2 className="mr-2 h-4 w-4" />Delete</DropdownMenuItem>

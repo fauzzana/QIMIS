@@ -170,6 +170,8 @@ model AssetMaintenance {
   condition      Int
   note           String
   create_at      DateTime
+  date_end       DateTime?
+  attachment     String?
 
   asset Asset @relation(fields: [asset_serial], references: [asset_serial])
 }
