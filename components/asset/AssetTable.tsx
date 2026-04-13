@@ -293,7 +293,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
             <DropdownMenuContent align="end" className="w-32">
               {/* tombol Detail */}
               <DropdownMenuItem asChild>
-                <Link href={`/admin/assetManagement/dataAsset/${row.original.asset_serial}`} className="flex items-center gap-2">
+                <Link href={`/admin/assetManagement/${row.original.asset_serial}`} className="flex items-center gap-2">
                   <Eye className="mr-2 h-4 w-4" />Detail
                 </Link>
               </DropdownMenuItem>
@@ -422,7 +422,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
           <DropdownMenuContent align="end" className="w-32">
             {/* tombol Detail */}
             <DropdownMenuItem asChild>
-              <Link href={`/admin/assetManagement/dataAsset/${row.original.asset_serial}`} className="flex items-center gap-2">
+              <Link href={`/admin/assetManagement/${row.original.asset_serial}`} className="flex items-center gap-2">
                 <Eye className="mr-2 h-4 w-4" />Detail
               </Link>
             </DropdownMenuItem>
@@ -749,7 +749,7 @@ export function AssetTable({
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Link href="/admin/assetManagement/dataAsset/addSection">
+          <Link href="/admin/assetManagement/addSection">
             <Button variant="outline" size="sm" className="cursor-pointer">
               <IconPlus />
               Add Section
@@ -757,7 +757,7 @@ export function AssetTable({
           </Link>
         </div>
         <div className="items-baseline-last justify-end flex-wrap gap-2 md:flex">
-          <Link href="/admin/assetManagement/dataAsset/assetMaintenance">
+          <Link href="/admin/assetManagement/assetMaintenance">
             <Button variant="destructive" size="sm" className="cursor-pointer">
               <Wrench />
               Asset Maintenance

@@ -70,7 +70,7 @@ const data = {
   inventory: [
     {
       name: "Data Assets",
-      url: "/admin/assetManagement/dataAsset",
+      url: "/admin/assetManagement",
       icon: IconAsset,
     },
     {

@@ -36,7 +36,7 @@ export default async function addAssetPage() {
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href="/admin/assetManagement/dataAsset">Data Asset</BreadcrumbLink>
+                <BreadcrumbLink href="/admin/assetManagement">Data Asset</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>

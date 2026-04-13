@@ -30,7 +30,7 @@ export function CardImage() {
   const handleAssetScan = (result: string | null) => {
     if (result && result !== "undefined") {
       setIsAssetDialogOpen(false)
-      router.push(`/admin/assetManagement/dataAsset/${encodeURIComponent(result)}`)
+      router.push(`/admin/assetManagement/${encodeURIComponent(result)}`)
       return
     }
 
