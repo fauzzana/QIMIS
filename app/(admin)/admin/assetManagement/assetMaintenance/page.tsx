@@ -49,6 +49,7 @@ async function getMaintenanceAssets() {
     status: asset.status,
     qr_code_path: asset.qr_code_path,
     image: asset.image,
+    condition: asset.maintenances[0]?.condition,
     maintenance: asset.maintenances.map(m => ({
       attachment: m.attachment,
       create_at: m.create_at.toISOString(),

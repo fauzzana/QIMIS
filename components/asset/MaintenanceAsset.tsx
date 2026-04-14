@@ -52,15 +52,15 @@ import {
 import { IconLayoutColumns, IconChevronLeft, IconChevronRight, IconChevronsLeft, IconChevronsRight } from "@tabler/icons-react"
 import { Search } from "lucide-react"
 
-const maintenanceFormSchema = z.object({
+const schema = z.object({
   asset_serial: z.string().min(1, "Asset serial is required"),
-  condition: z.number().min(1, "Condition is required"),
+  condition: z.number(),
   note: z.string().min(1, "Note is required"),
   date_end: z.string().optional(),
   attachment: z.instanceof(File).optional(),
 })
 
-type MaintenanceForm = z.infer<typeof maintenanceFormSchema>
+type MaintenanceForm = z.infer<typeof schema>
 
 interface MaintenanceAssetProps {
   data: any[]
@@ -101,9 +101,17 @@ const columns: ColumnDef<any>[] = [
     },
   },
   {
-    accessorKey: "status",
-    header: "Status",
-    cell: () => <Badge variant="secondary">Maintenance</Badge>,
+    accessorKey: "condition",
+    header: "Condition",
+    cell: ({ row }) => {
+      const condition = row.original.condition
+      if (condition === undefined || condition === null) {
+        return <Badge variant="outline">Unknown</Badge>
+      }
+      return (
+        <Badge variant={getConditionVariant(condition)}>{getConditionText(condition)}</Badge>
+      )
+    }
   },
   {
     id: "attachment",
@@ -113,7 +121,7 @@ const columns: ColumnDef<any>[] = [
       return attachment ? (
         <Link href={attachment} target="_blank" rel="noopener noreferrer">
           <Button variant="ghost" size="sm">
-            Download
+            View
           </Button>
         </Link>
       ) : (
@@ -122,6 +130,30 @@ const columns: ColumnDef<any>[] = [
     },
   },
 ]
+
+const getConditionVariant = (condition: number) => {
+  switch (condition) {
+    case 1:
+      return "destructive"
+    case 2:
+      return "link"
+    case 3:
+      return "secondary"
+    default: return "outline"
+  }
+}
+
+const getConditionText = (condition: number) => {
+  switch (condition) {
+    case 1:
+      return "Poor"
+    case 2:
+      return "Okay"
+    case 3:
+      return "Good"
+    default: return `${condition}`
+  }
+}
 
 export function MaintenanceAsset({ data }: MaintenanceAssetProps) {
   const [open, setOpen] = React.useState(false)
@@ -165,6 +197,7 @@ export function MaintenanceAsset({ data }: MaintenanceAssetProps) {
         row.original.name,
         row.original.category?.category_name,
         row.original.location?.location_name,
+        row.original.condition,
         row.original.maintenance?.[0]?.date_end,
       ]
       return searchableFields
@@ -299,9 +332,8 @@ export function MaintenanceAsset({ data }: MaintenanceAssetProps) {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="1">Poor</SelectItem>
-                      <SelectItem value="2">Fair</SelectItem>
+                      <SelectItem value="2">Okay</SelectItem>
                       <SelectItem value="3">Good</SelectItem>
-                      <SelectItem value="4">Excellent</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
