@@ -3,7 +3,7 @@
 import * as React from "react"
 import {
   IconHelp,
-  IconInnerShadowTop,
+  IconBuildingWarehouse,
   IconPackages,
   IconSearch,
   IconSettings,
@@ -77,6 +77,11 @@ const data = {
       name: "Data Items",
       url: "/admin/inventoryManagement",
       icon: IconPackages,
+    },
+    {
+      name: "Transaction Items",
+      url: "/admin/transaction",
+      icon: IconBuildingWarehouse,
     },
     {
       name: "Scan QR Code",
