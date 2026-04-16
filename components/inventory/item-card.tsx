@@ -1,6 +1,7 @@
-﻿// "use client"
+﻿"use client"
 
 import { useEffect, useState } from "react"
+import { MinusIcon, PlusIcon } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -111,7 +112,7 @@ export function RetrivalCard({ item, defaultName, defaultDepartment, onSubmit }:
       <CardFooter className="flex flex-col gap-3 p-4">
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button className="w-full">Retrival</Button>
+            <Button className="w-full cursor-pointer">Retrival</Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
@@ -149,18 +150,39 @@ export function RetrivalCard({ item, defaultName, defaultDepartment, onSubmit }:
               <Field>
                 <FieldLabel htmlFor="quantity">Jumlah</FieldLabel>
                 <FieldGroup>
-                  <Input
-                    id="quantity"
-                    type="number"
-                    min={1}
-                    value={quantity}
-                    onChange={(event) => setQuantity(Math.max(1, Number(event.target.value) || 1))}
-                  />
+                  <div className="flex items-center gap-2">
+                    <Input
+                      id="quantity"
+                      type="number"
+                      min={1}
+                      value={quantity}
+                      onChange={(event) => setQuantity(Math.max(1, Number(event.target.value) || 1))}
+                      className="flex-1"
+                    />
+                    <div className="flex gap-1">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      >
+                        <MinusIcon />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => setQuantity(quantity + 1)}
+                      >
+                        <PlusIcon />
+                      </Button>
+                    </div>
+                  </div>
                 </FieldGroup>
               </Field>
 
               <DialogFooter>
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full cursor-pointer">
                   Submit Retrival
                 </Button>
               </DialogFooter>
@@ -172,10 +194,44 @@ export function RetrivalCard({ item, defaultName, defaultDepartment, onSubmit }:
   )
 }
 
-export function StoreCard({ item }: { item: ItemCardProps }) {
+type StoreCardProps = {
+  item: ItemCardProps
+  defaultName: string
+  defaultDepartment: string
+  onSubmit?: (payload: {
+    item: ItemCardProps
+    personName: string
+    department: string
+    quantity: number
+  }) => void
+}
+
+export function StoreCard({ item, defaultName, defaultDepartment, onSubmit }: StoreCardProps) {
+  const [open, setOpen] = useState(false)
+  const [personName, setPersonName] = useState(defaultName)
+  const [department, setDepartment] = useState(defaultDepartment)
+  const [quantity, setQuantity] = useState(1)
+
+  useEffect(() => {
+    setPersonName(defaultName)
+    setDepartment(defaultDepartment)
+  }, [defaultName, defaultDepartment])
+
   const currentQty = item.stockItems?.[0]?.current_qty ?? 0
   const imageSrc = item.image ?? "/placeholder.svg"
   const statusText = statusLabels[item.status] ?? "Unknown"
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setOpen(false)
+
+    onSubmit?.({
+      item,
+      personName: personName || defaultName,
+      department: department || defaultDepartment,
+      quantity,
+    })
+  }
 
   return (
     <Card className="flex flex-col justify-between overflow-hidden">
@@ -208,9 +264,85 @@ export function StoreCard({ item }: { item: ItemCardProps }) {
       </div>
 
       <CardFooter className="flex flex-col gap-3 p-4">
-        <Button variant="secondary" className="w-full">
-          Store
-        </Button>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button className="w-full cursor-pointer">Add</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Store Item</DialogTitle>
+              <DialogDescription>
+                Isi nama dan departemen untuk memproses transaksi.
+              </DialogDescription>
+            </DialogHeader>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <Field>
+                <FieldLabel htmlFor="personName">Nama</FieldLabel>
+                <FieldGroup>
+                  <Input
+                    id="personName"
+                    value={personName}
+                    onChange={(event) => setPersonName(event.target.value)}
+                    placeholder="Masukkan nama"
+                  />
+                </FieldGroup>
+              </Field>
+
+              <Field>
+                <FieldLabel htmlFor="department">Departemen</FieldLabel>
+                <FieldGroup>
+                  <Input
+                    id="department"
+                    value={department}
+                    onChange={(event) => setDepartment(event.target.value)}
+                    placeholder="Masukkan departemen"
+                  />
+                </FieldGroup>
+              </Field>
+
+              <Field>
+                <FieldLabel htmlFor="quantity">Jumlah</FieldLabel>
+                <FieldGroup>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      id="quantity"
+                      type="number"
+                      min={1}
+                      value={quantity}
+                      onChange={(event) => setQuantity(Math.max(1, Number(event.target.value) || 1))}
+                      className="flex-1"
+                    />
+                    <div className="flex gap-1">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      >
+                        <MinusIcon />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => setQuantity(quantity + 1)}
+                      >
+                        <PlusIcon />
+                      </Button>
+                    </div>
+                  </div>
+                </FieldGroup>
+              </Field>
+
+              <DialogFooter>
+                <Button type="submit" className="w-full cursoer-pointer">
+                  Submit Store
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
       </CardFooter>
     </Card>
   )

@@ -117,7 +117,7 @@ export function Tab() {
               </div>
             ) : (
               items.map((item) => (
-                <StoreCard key={item.item_id} item={item} />
+                <StoreCard key={item.item_id} item={item} defaultName={defaultName} defaultDepartment={defaultDepartment} />
               ))
             )}
           </div>
