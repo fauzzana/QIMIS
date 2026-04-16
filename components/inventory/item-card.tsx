@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { MinusIcon, PlusIcon } from "lucide-react"
+import { toast } from "sonner"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -53,6 +54,20 @@ const statusLabels: Record<number, string> = {
   4: "Archived",
 }
 
+
+
+type StoreCardProps = {
+  item: ItemCardProps
+  defaultName: string
+  defaultDepartment: string
+  onSubmit?: (payload: {
+    item: ItemCardProps
+    personName: string
+    department: string
+    quantity: number
+  }) => void
+}
+
 export function RetrivalCard({ item, defaultName, defaultDepartment, onSubmit }: RetrivalCardProps) {
   const [open, setOpen] = useState(false)
   const [personName, setPersonName] = useState(defaultName)
@@ -68,16 +83,45 @@ export function RetrivalCard({ item, defaultName, defaultDepartment, onSubmit }:
   const statusText = statusLabels[item.status] ?? "Unknown"
   const imageSrc = item.image ?? "/placeholder.svg"
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setOpen(false)
 
-    onSubmit?.({
-      item,
-      personName: personName || defaultName,
-      department: department || defaultDepartment,
-      quantity,
-    })
+    try {
+      const response = await fetch('/api/transaction', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          item_id: item.item_id,
+          person_name: personName || defaultName,
+          department: department || defaultDepartment,
+          qty: quantity,
+          action: false, // retrieval
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        toast.success(data.message)
+        setOpen(false)
+        onSubmit?.({
+          item,
+          personName: personName || defaultName,
+          department: department || defaultDepartment,
+          quantity,
+        })
+      } else {
+        if (data.alert) {
+          toast.error(data.error)
+        } else {
+          toast.error(data.error || 'Transaction failed')
+        }
+      }
+    } catch (error) {
+      toast.error('Network error occurred')
+    }
   }
 
   return (
@@ -194,18 +238,6 @@ export function RetrivalCard({ item, defaultName, defaultDepartment, onSubmit }:
   )
 }
 
-type StoreCardProps = {
-  item: ItemCardProps
-  defaultName: string
-  defaultDepartment: string
-  onSubmit?: (payload: {
-    item: ItemCardProps
-    personName: string
-    department: string
-    quantity: number
-  }) => void
-}
-
 export function StoreCard({ item, defaultName, defaultDepartment, onSubmit }: StoreCardProps) {
   const [open, setOpen] = useState(false)
   const [personName, setPersonName] = useState(defaultName)
@@ -221,16 +253,41 @@ export function StoreCard({ item, defaultName, defaultDepartment, onSubmit }: St
   const imageSrc = item.image ?? "/placeholder.svg"
   const statusText = statusLabels[item.status] ?? "Unknown"
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setOpen(false)
 
-    onSubmit?.({
-      item,
-      personName: personName || defaultName,
-      department: department || defaultDepartment,
-      quantity,
-    })
+    try {
+      const response = await fetch('/api/transaction', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          item_id: item.item_id,
+          person_name: personName || defaultName,
+          department: department || defaultDepartment,
+          qty: quantity,
+          action: true, // store
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        toast.success(data.message)
+        setOpen(false)
+        onSubmit?.({
+          item,
+          personName: personName || defaultName,
+          department: department || defaultDepartment,
+          quantity,
+        })
+      } else {
+        toast.error(data.error || 'Transaction failed')
+      }
+    } catch (error) {
+      toast.error('Network error occurred')
+    }
   }
 
   return (
