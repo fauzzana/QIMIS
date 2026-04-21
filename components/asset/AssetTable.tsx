@@ -439,65 +439,67 @@ export function AssetTable({
       className="w-full flex-col justify-start gap-6"
     >
       <div className="space-y-4">
-        <div className="flex items-center gap-2">
-          <DropdownMenu>
-            <div className="flex gap-2">
-              <div className="relative max-w-sm w-full">
-                <Search className="absolute left-2 top-2.5 h-4 w-4" />
-                <Input
-                  className="pl-8"
-                  placeholder="Search..."
-                  value={globalFilter}
-                  onChange={(e) => setGlobalFilter(e.target.value)}
-                />
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-2">
+            <DropdownMenu>
+              <div className="flex gap-2">
+                <div className="relative max-w-sm w-full">
+                  <Search className="absolute left-2 top-2.5 h-4 w-4" />
+                  <Input
+                    className="pl-8"
+                    placeholder="Search..."
+                    value={globalFilter}
+                    onChange={(e) => setGlobalFilter(e.target.value)}
+                  />
+                </div>
               </div>
-            </div>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <IconLayoutColumns />
-                <span className="hidden lg:inline">Customize Columns</span>
-                <span className="lg:hidden">Columns</span>
-                <IconChevronDown />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              {table
-                .getAllColumns()
-                .filter(
-                  (column) =>
-                    typeof column.accessorFn !== "undefined" &&
-                    column.getCanHide()
-                )
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <IconLayoutColumns />
+                  <span className="hidden lg:inline">Customize Columns</span>
+                  <span className="lg:hidden">Columns</span>
+                  <IconChevronDown />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                {table
+                  .getAllColumns()
+                  .filter(
+                    (column) =>
+                      typeof column.accessorFn !== "undefined" &&
+                      column.getCanHide()
                   )
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <Link href="/admin/assetManagement/addSection">
-            <Button variant="outline" size="sm" className="cursor-pointer">
-              <IconPlus />
-              Add Section
-            </Button>
-          </Link>
-        </div>
-        <div className="items-baseline-last justify-end flex-wrap gap-2 md:flex">
-          <Link href="/admin/assetManagement/assetMaintenance">
-            <Button variant="destructive" size="sm" className="cursor-pointer">
-              <Wrench />
-              Asset Maintenance
-            </Button>
-          </Link>
+                  .map((column) => {
+                    return (
+                      <DropdownMenuCheckboxItem
+                        key={column.id}
+                        className="capitalize"
+                        checked={column.getIsVisible()}
+                        onCheckedChange={(value) =>
+                          column.toggleVisibility(!!value)
+                        }
+                      >
+                        {column.id}
+                      </DropdownMenuCheckboxItem>
+                    )
+                  })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          <div className="flex items-center gap-2">
+            <Link href="/admin/assetManagement/addSection">
+              <Button variant="outline" size="sm" className="cursor-pointer">
+                <IconPlus />
+                <span className="hidden lg:inline">Add Section</span>
+              </Button>
+            </Link>
+            <Link href="/admin/assetManagement/assetMaintenance">
+              <Button variant="destructive" size="sm" className="cursor-pointer">
+                <Wrench />
+                <span className="hidden lg:inline">Asset Maintenance</span>
+              </Button>
+            </Link>
+          </div>
         </div>
         <div className="overflow-hidden rounded-lg border">
           <DndContext

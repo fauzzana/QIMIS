@@ -49,7 +49,7 @@ import {
   type SortingState,
   type VisibilityState,
 } from "@tanstack/react-table"
-import { IconLayoutColumns, IconChevronLeft, IconChevronRight, IconChevronsLeft, IconChevronsRight } from "@tabler/icons-react"
+import { IconLayoutColumns, IconChevronLeft, IconChevronRight, IconChevronsLeft, IconChevronsRight, IconChevronDown } from "@tabler/icons-react"
 import { Search } from "lucide-react"
 
 const schema = z.object({
@@ -302,20 +302,22 @@ export function MaintenanceAsset({ data }: MaintenanceAssetProps) {
     <div className="w-full space-y-4">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
-          <Search className="h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search assets..."
-            value={globalFilter}
-            onChange={(event) => setGlobalFilter(event.target.value)}
-            className="h-9 w-full sm:w-62.5"
-          />
-        </div>
-        <div className="flex items-center gap-2">
+          <div className="relative max-w-sm w-full">
+            <Search className="absolute left-2 top-2.5 h-4 w-4" />
+            <Input
+              className="pl-8"
+              placeholder="Search..."
+              value={globalFilter}
+              onChange={(e) => setGlobalFilter(e.target.value)}
+            />
+          </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
-                <IconLayoutColumns className="mr-2 h-4 w-4" />
-                Columns
+                <IconLayoutColumns />
+                <span className="hidden lg:inline">Customize Columns</span>
+                <span className="lg:hidden">Columns</span>
+                <IconChevronDown />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -336,7 +338,8 @@ export function MaintenanceAsset({ data }: MaintenanceAssetProps) {
                 ))}
             </DropdownMenuContent>
           </DropdownMenu>
-
+        </div>
+        <div className="flex items-center gap-2">
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button size="sm">Add Maintenance</Button>
