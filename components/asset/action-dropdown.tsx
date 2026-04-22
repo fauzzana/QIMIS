@@ -1,22 +1,17 @@
-import React from "react"
+import React, { useRef } from "react"
+import { useReactToPrint } from "react-to-print"
 import Link from "next/link"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter, DrawerClose } from "@/components/ui/drawer"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { useAssetActions } from "@/hooks/useAssetActions"
 import { EditDialog, EditDrawer } from "@/components/asset/edit-form"
 import {
   MoreHorizontal,
-  Search,
-  Edit,
   Trash2,
   QrCode,
-  GripVertical,
   Wrench,
   Eye,
 } from "lucide-react"
@@ -26,6 +21,11 @@ export default function AssetEditForm({ asset }: any) {
   const { performDelete, performQr, isDeleting } = useAssetActions(asset)
   const [openQr, setOpenQr] = React.useState(false)
   const isDesktop = useMediaQuery("(min-width: 768px)")
+  const qrRef = useRef<HTMLDivElement>(null)
+  const handlePrint = useReactToPrint({
+    contentRef: qrRef,
+    documentTitle: `QR Code - ${asset.name || asset.asset_serial}`,
+  })
 
   if (isDesktop) {
     return (
@@ -57,23 +57,28 @@ export default function AssetEditForm({ asset }: any) {
             <DialogContent>
               <DialogHeader className="text-left">
                 <DialogTitle>Asset QR Code</DialogTitle>
-                <DialogDescription>
-                  QR code for {asset.name}
-                </DialogDescription>
+                <div ref={qrRef} >
+                  <div className="flex items-center justify-center p-4">
+                    <DialogDescription>{asset.name} <br /> {asset.asset_serial}</DialogDescription>
+                  </div>
+                  <div className="flex items-center justify-center p-4">
+                    {asset.qr_code_path ? (
+                      <img
+                        src={asset.qr_code_path}
+                        alt="QR Code"
+                        className="w-64 h-64"
+                        onClick={() => performQr()}
+                      />
+                    ) : (
+                      <p className="text-gray-500">QR Code not available</p>
+                    )}
+                  </div>
+                </div>
               </DialogHeader>
-              <div className="flex items-center justify-center p-4">
-                {asset.qr_code_path ? (
-                  <img
-                    src={asset.qr_code_path}
-                    alt="QR Code"
-                    className="w-64 h-64"
-                    onClick={() => performQr()}
-                  />
-                ) : (
-                  <p className="text-gray-500">QR Code not available</p>
-                )}
-              </div>
-              <Button variant="outline" onClick={() => setOpenQr(false)}>Close</Button>
+              {/* <div className="flex gap-2"> */}
+              <Button variant="default" onClick={handlePrint}>Print</Button>
+              <Button variant="destructive" onClick={() => setOpenQr(false)}>Close</Button>
+              {/* </div> */}
             </DialogContent>
           </Dialog>
           <DropdownMenuSeparator />
@@ -124,9 +129,9 @@ export default function AssetEditForm({ asset }: any) {
           <DrawerContent>
             <DrawerHeader className="text-left">
               <DrawerTitle>Asset QR Code</DrawerTitle>
-              <DrawerDescription>
+              <div ref={qrRef} className="flex items-center justify-center p-4">
                 QR code for asset {asset.name}
-              </DrawerDescription>
+              </div>
             </DrawerHeader>
             <div className="flex items-center justify-center p-4">
               {asset.qr_code_path ? (
@@ -141,6 +146,7 @@ export default function AssetEditForm({ asset }: any) {
               )}
             </div>
             <DrawerFooter className="pt-2">
+              <Button variant="link" onClick={handlePrint}>Print</Button>
               <DrawerClose asChild>
                 <Button variant="outline">Close</Button>
               </DrawerClose>
