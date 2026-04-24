@@ -217,7 +217,9 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
           <span>{qty}</span>
         </div>
       )
-    }
+    },
+    enableSorting: false,
+    enableHiding: true,
   },
   {
     accessorKey: "purcase_date",
