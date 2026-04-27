@@ -4,15 +4,15 @@ import { NextResponse } from "next/server"
 
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ asset_serial: string }> }
+  { params }: { params: Promise<{ item_id: string }> }
 ) {
   try {
     const resolvedParams = await params;
-    const { asset_serial } = resolvedParams;
+    const { item_id } = resolvedParams;
 
-    if (!asset_serial || asset_serial === "undefined") {
+    if (!item_id || item_id === "undefined") {
       return NextResponse.json(
-        { error: "Asset serial is required and must be valid" },
+        { error: "Item ID is required and must be valid" },
         { status: 400 }
       )
     }
@@ -26,51 +26,53 @@ export async function GET(
       )
     }
 
-    const asset = await prisma.asset.findUnique({
+    const item = await prisma.item.findUnique({
       where: {
-        asset_serial: asset_serial,
+        item_id: item_id,
       },
       select: {
-        asset_serial: true,
+        item_id: true,
         name: true,
-        description: true,
         category: {
           select: {
             category_name: true,
           }
         },
-        qty: true,
-        purcase_date: true,
-        purcase_price: true,
-        status: true,
         location: {
           select: {
             location_name: true,
           }
         },
-        qr_code_path: true,
+        status: true,
         image: true,
+        qr_code_path: true,
+        stockItems: {
+          select: {
+            current_qty: true,
+            min_qty: true,
+          },
+        },
       },
     })
 
-    if (!asset) {
+    if (!item) {
       return NextResponse.json(
-        { error: "Asset not found" },
+        { error: "Item not found" },
         { status: 404 }
       )
     }
 
     return NextResponse.json({
       success: true,
-      data: asset,
+      data: item,
     })
   } catch (error) {
-    console.error("Error fetching asset - Details:", {
+    console.error("Error fetching item - Details:", {
       error: error instanceof Error ? error.message : String(error),
       stack: error instanceof Error ? error.stack : undefined,
     })
     return NextResponse.json(
-      { 
+      {
         error: "Internal server error",
         details: error instanceof Error ? error.message : "Unknown error"
       },

@@ -6,8 +6,6 @@ import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter, DrawerClose } from "@/components/ui/drawer"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
 import { useItemActions } from "@/hooks/useItemActions"
 import { EditDialog, EditDrawer } from "@/components/inventory/edit-form"
 import {
@@ -15,8 +13,6 @@ import {
   Trash2,
   QrCode,
   Eye,
-  Edit,
-
 } from "lucide-react"
 
 export default function ItemActionDropdown({ item }: any) {
@@ -43,9 +39,16 @@ export default function ItemActionDropdown({ item }: any) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-32">
+          {/* tombol Detail */}
+          <DropdownMenuItem asChild>
+            <Link href={`/admin/inventoryManagement/${item.item_id}`} className="flex items-center gap-2">
+              <Eye className="mr-2 h-4 w-4" />Detail
+            </Link>
+          </DropdownMenuItem>
+          {/* tombol edit */}
           <EditDialog item={item} />
+          {/* tombol qr */}
           <Dialog open={openQr} onOpenChange={setOpenQr}>
-            {/* tombol qr */}
             <DialogTrigger asChild>
               <DropdownMenuItem onSelect={(event) => event.preventDefault()}>
                 <QrCode className="mr-2 h-4 w-4" />QR Code</DropdownMenuItem>
@@ -100,9 +103,16 @@ export default function ItemActionDropdown({ item }: any) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-32">
+        {/* tombol Detail */}
+        <DropdownMenuItem asChild>
+          <Link href={`/admin/inventoryManagement/${item.item_id}`} className="flex items-center gap-2">
+            <Eye className="mr-2 h-4 w-4" />Detail
+          </Link>
+        </DropdownMenuItem>
+        {/* tombol edit */}
         <EditDrawer item={item} />
+        {/* tombol qr */}
         <Drawer open={openQr} onOpenChange={setOpenQr}>
-          {/* tombol qr */}
           <DrawerTrigger asChild>
             <DropdownMenuItem onSelect={(event) => event.preventDefault()}>
               <QrCode className="mr-2 h-4 w-4" />QR Code</DropdownMenuItem>
