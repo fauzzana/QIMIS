@@ -1,8 +1,15 @@
 "use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import * as React from "react"
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
+import { useAssetActions } from "@/hooks/useAssetActions"
+import { AssetActionDetails } from "@/components/asset/action-dropdown";
+import { useReactToPrint } from "react-to-print";
+import { useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter, DrawerClose } from "@/components/ui/drawer"
 
 interface Asset {
   asset_serial: string;
@@ -27,9 +34,16 @@ interface DetailAssetProps {
 }
 
 export function DetailAsset({ asset }: DetailAssetProps) {
+  const { performQr } = useAssetActions(asset)
+  const [openQr, setOpenQr] = React.useState(false)
+  const qrRef = useRef<HTMLDivElement>(null)
+  const handlePrint = useReactToPrint({
+    contentRef: qrRef,
+    documentTitle: `QR Code - ${asset.name || asset.asset_serial}`,
+  })
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 p-4">
-      <Card className="md:col-span-2">
+      <Card className="md:col-span-2 h-min">
         <CardHeader>
           <CardTitle>
             <h1 className="scroll-m-20 text-center text-2xl font-bold tracking-tight text-balance">{asset.name}</h1>
@@ -75,6 +89,9 @@ export function DetailAsset({ asset }: DetailAssetProps) {
             </Badge>
           </div>
         </CardContent>
+        <CardFooter className="bg-white flex justify-end">
+          <AssetActionDetails asset={asset} />
+        </CardFooter>
       </Card>
 
       {/* Image Card */}
@@ -104,23 +121,58 @@ export function DetailAsset({ asset }: DetailAssetProps) {
           <CardTitle className="text-base">QR Code</CardTitle>
         </CardHeader>
         <CardContent>
-          {asset.qr_code_path ? (
-            <div className="relative w-full aspect-square">
-              <Image
-                src={asset.qr_code_path}
-                alt="QR Code"
-                fill
-                className="object-contain"
-              />
-            </div>
-          ) : (
-            <div className="w-full aspect-square bg-muted flex items-center justify-center rounded">
-              <span className="text-muted-foreground">No QR code available</span>
-            </div>
-          )}
-        </CardContent>
+          <Drawer open={openQr} onOpenChange={setOpenQr}>
+            {/* tombol qr */}
+            <DrawerTrigger asChild className="cursor-pointer">
+              {asset.qr_code_path ? (
+                <div className="relative w-full aspect-square">
+                  <Image
+                    src={asset.qr_code_path}
+                    alt="QR Code"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+              ) : (
+                <div className="w-full aspect-square bg-muted flex items-center justify-center rounded">
+                  <span className="text-muted-foreground">No QR code available</span>
+                </div>
+              )}
+            </DrawerTrigger>
+            <DrawerContent>
+              <DrawerHeader className="text-left">
+                <DrawerTitle>Asset QR Code</DrawerTitle>
+                <div ref={qrRef}>
+                  <div className="flex items-center justify-center p-4">
+                    QR code for asset {asset.name}
+                  </div>
+                  <div className="flex items-center justify-center p-4">
+                    {asset.qr_code_path ? (
+                      <img
+                        src={asset.qr_code_path}
+                        alt="QR Code"
+                        className="w-48 h-48"
+                        onClick={() => performQr()}
+                      />
+                    ) : (
+                      <p className="text-gray-500">QR Code not available</p>
+                    )}
+                  </div>
+                </div>
+              </DrawerHeader>
+              <DrawerFooter className="pt-2">
+                <Button variant="default" onClick={handlePrint}>
+                  Print
+                </Button>
+                <DrawerClose asChild>
+                  <Button variant="outline">Close</Button>
+                </DrawerClose>
+              </DrawerFooter>
+            </DrawerContent>
+          </Drawer>
 
+        </CardContent>
       </Card>
-    </div>
+    </div >
   );
 }

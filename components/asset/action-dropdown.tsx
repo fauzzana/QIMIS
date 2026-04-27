@@ -7,17 +7,18 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter, DrawerClose } from "@/components/ui/drawer"
 import { useAssetActions } from "@/hooks/useAssetActions"
-import { EditDialog, EditDrawer } from "@/components/asset/edit-form"
+import { EditDialog, EditDrawer, EditDialogContent, EditDrawerContent } from "@/components/asset/edit-form"
 import {
   MoreHorizontal,
   Trash2,
   QrCode,
   Wrench,
   Eye,
+  Edit,
 } from "lucide-react"
 
 
-export default function AssetEditForm({ asset }: any) {
+export function AssetEditForm({ asset }: any) {
   const { performDelete, performQr, isDeleting } = useAssetActions(asset)
   const [openQr, setOpenQr] = React.useState(false)
   const isDesktop = useMediaQuery("(min-width: 768px)")
@@ -128,25 +129,26 @@ export default function AssetEditForm({ asset }: any) {
           </DrawerTrigger>
           <DrawerContent>
             <DrawerHeader className="text-left">
-              <DrawerTitle>Asset QR Code</DrawerTitle>
-              <div ref={qrRef} className="flex items-center justify-center p-4">
-                QR code for asset {asset.name}
+              <div ref={qrRef} >
+                <div className="flex items-center justify-center p-4">
+                  <DrawerDescription>{asset.name} <br /> {asset.asset_serial}</DrawerDescription>
+                </div>
+                <div className="flex items-center justify-center p-4">
+                  {asset.qr_code_path ? (
+                    <img
+                      src={asset.qr_code_path}
+                      alt="QR Code"
+                      className="w-64 h-64"
+                      onClick={() => performQr()}
+                    />
+                  ) : (
+                    <p className="text-gray-500">QR Code not available</p>
+                  )}
+                </div>
               </div>
             </DrawerHeader>
-            <div className="flex items-center justify-center p-4">
-              {asset.qr_code_path ? (
-                <img
-                  src={asset.qr_code_path}
-                  alt="QR Code"
-                  className="w-48 h-48"
-                  onClick={() => performQr()}
-                />
-              ) : (
-                <p className="text-gray-500">QR Code not available</p>
-              )}
-            </div>
             <DrawerFooter className="pt-2">
-              <Button variant="link" onClick={handlePrint}>Print</Button>
+              <Button variant="default" onClick={handlePrint}>Print</Button>
               <DrawerClose asChild>
                 <Button variant="outline">Close</Button>
               </DrawerClose>
@@ -169,5 +171,49 @@ export default function AssetEditForm({ asset }: any) {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+  )
+}
+
+export function AssetActionDetails({ asset }: any) {
+  const { performDelete, isDeleting } = useAssetActions(asset)
+  const [openEdit, setOpenEdit] = React.useState(false)
+  const isDesktop = useMediaQuery("(min-width: 768px)")
+
+  if (isDesktop) {
+    return (
+      <div className="flex gap-2">
+        <Dialog open={openEdit} onOpenChange={setOpenEdit}>
+          <DialogTrigger asChild>
+            <Button variant="outline">
+              <Edit className="mr-2 h-4 w-4" />Edit
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <EditDialogContent asset={asset} />
+          </DialogContent>
+        </Dialog>
+
+        <Button variant="destructive"
+          onClick={performDelete}
+          onSelect={(event) => event.preventDefault()}
+          disabled={isDeleting}>
+          <Trash2 className="mr-2 h-4 w-4" />
+          {isDeleting ? "Deleting..." : "Delete"}
+        </Button>
+      </div>
+    )
+  }
+
+  return (
+    <Drawer open={openEdit} onOpenChange={setOpenEdit}>
+      <DrawerTrigger asChild>
+        <Button variant="outline">
+          <Edit className="mr-2 h-4 w-4" />Edit
+        </Button>
+      </DrawerTrigger>
+      <DrawerContent>
+        <EditDrawerContent asset={asset} />
+      </DrawerContent>
+    </Drawer>
   )
 }

@@ -62,41 +62,14 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuSeparator,
   DropdownMenuCheckboxItem
 } from "@/components/ui/dropdown-menu"
 
 import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer"
-
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-
-import {
-  MoreHorizontal,
   Search,
-  Edit,
-  Trash2,
-  QrCode,
   GripVertical,
   Wrench,
-  Eye,
 } from "lucide-react"
 
 import { IconLayoutColumns, IconPlus, IconChevronDown, IconChevronsLeft, IconChevronLeft, IconChevronRight, IconChevronsRight } from "@tabler/icons-react"
@@ -107,9 +80,7 @@ import {
 } from "@/components/ui/tabs"
 
 import { z } from "zod"
-import { handleEdit, handleQr, handleDelete } from "./ActionAsset"
-import { useMediaQuery } from "@/hooks/use-media-query"
-import AssetEditForm from "@/components/asset/action-dropdown"
+import { AssetEditForm } from "@/components/asset/action-dropdown"
 
 export const schema = z.object({
   asset_serial: z.string(),
