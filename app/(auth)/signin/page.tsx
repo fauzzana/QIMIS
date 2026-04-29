@@ -18,7 +18,7 @@ export default async function AuthPage() {
   const role = session.user.role
 
   if (role === "ADMIN") {
-    redirect("/admin/dashboard")
+    redirect("/dashboard")
   }
 
   if (role === "MANAGEMENT") {
@@ -27,5 +27,9 @@ export default async function AuthPage() {
 
   if (role === "STAFF") {
     redirect("/operational/dashboard")
+  }
+
+  if (role === "GUEST") {
+    redirect("/wait")
   }
 }

@@ -510,7 +510,7 @@ export function UserTable({ data: initialData }: { data: z.infer<typeof schema>[
             </DropdownMenu>
           </div>
           <div className="flex items-center gap-2">
-            <Link href="/admin/userManagement/department">
+            <Link href="/userManagement/department">
               <Button variant="outline" size="sm" className="cursor-pointer">
                 <IconPlus />
                 <span className="hidden lg:inline">Departments</span>

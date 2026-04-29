@@ -30,7 +30,7 @@ export function CardImage() {
   const handleAssetScan = (result: string | null) => {
     if (result && result !== "undefined") {
       setIsAssetDialogOpen(false)
-      router.push(`/admin/assetManagement/${encodeURIComponent(result)}`)
+      router.push(`/assetManagement/${encodeURIComponent(result)}`)
       return
     }
 
@@ -40,7 +40,7 @@ export function CardImage() {
   const handleItemScan = (result: string | null) => {
     if (result && result !== "undefined") {
       setIsItemDialogOpen(false)
-      router.push(`/admin/inventoryManagement/${encodeURIComponent(result)}`)
+      router.push(`/inventoryManagement/${encodeURIComponent(result)}`)
       return
     }
 

@@ -34,10 +34,10 @@ const formSchema = z.object({
   category_id: z.string().min(1, "Category harus dipilih"),
   location_id: z.string().min(1, "Location harus dipilih"),
   qty: z.coerce.number().min(1, "Qty harus lebih dari 0"),
-  purcase_date: z.string().refine((d) => !Number.isNaN(Date.parse(d)), {
+  purchase_date: z.string().refine((d) => !Number.isNaN(Date.parse(d)), {
     message: "Tanggal tidak valid",
   }),
-  purcase_price: z.coerce.number().min(0, "Purchase price tidak boleh negatif"),
+  purchase_price: z.coerce.number().min(0, "Purchase price tidak boleh negatif"),
   status: z.enum(["1", "2", "3", "4"]),
   image: z.string().optional(),
 }) satisfies z.ZodType<FormData>;
@@ -55,8 +55,8 @@ export function AddAssetForm() {
       category_id: "",
       location_id: "",
       qty: 1,
-      purcase_date: new Date().toISOString().substring(0, 10),
-      purcase_price: 0,
+      purchase_date: new Date().toISOString().substring(0, 10),
+      purchase_price: 0,
       status: "1",
       image: "",
     },
@@ -240,7 +240,7 @@ export function AddAssetForm() {
 
             <div className="p-2 mb-2">
               <Controller
-                name="purcase_date"
+                name="purchase_date"
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
@@ -256,7 +256,7 @@ export function AddAssetForm() {
 
             <div className="p-2 mb-2">
               <Controller
-                name="purcase_price"
+                name="purchase_price"
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>

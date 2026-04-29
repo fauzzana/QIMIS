@@ -1,40 +1,27 @@
-import { PrismaClient } from "@prisma/client"
+import "dotenv/config";
+import { PrismaClient } from '@prisma/client'
+import { PrismaNeon } from "@prisma/adapter-neon"
 
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined
-}
+const connectionString = `${process.env.DATABASE_URL}`;
 
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
-    log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
-    datasources: {
-      db: {
-        url: process.env.DATABASE_URL,
-      },
-    },
-  })
+const adapter = new PrismaNeon({ connectionString });
+const prisma = new PrismaClient({ adapter });
+export { prisma };
 
-if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma
-}
+// const prismaClientSingleton = () => {
+//   const databaseUrl = process.env.POSTGRES_PRISMA_URL;
 
-// Handle cleanup in development
-if (process.env.NODE_ENV === "development") {
-  process.on("beforeExit", async () => {
-    console.log("Disconnecting Prisma client...")
-    await prisma.$disconnect()
-  })
+//   if (!databaseUrl) {
+//     throw new Error("Database URL (POSTGRES_PRISMA_URL) is missing in .env file");
+//   }
 
-  // Handle uncaught exceptions
-  process.on("uncaughtException", async () => {
-    await prisma.$disconnect()
-    process.exit(1)
-  })
+//   return new PrismaClient()
+// }
 
-  // Handle unhandled promise rejections
-  process.on("unhandledRejection", async () => {
-    await prisma.$disconnect()
-    process.exit(1)
-  })
-}
+// declare global {
+//   var prisma: undefined | ReturnType<typeof prismaClientSingleton>
+// }
+
+// export const prisma = globalThis.prisma ?? prismaClientSingleton()
+
+// if (process.env.NODE_ENV !== 'production') globalThis.prisma = prisma

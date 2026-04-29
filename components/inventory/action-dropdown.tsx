@@ -41,7 +41,7 @@ export default function ItemActionDropdown({ item }: any) {
         <DropdownMenuContent align="end" className="w-32">
           {/* tombol Detail */}
           <DropdownMenuItem asChild>
-            <Link href={`/admin/inventoryManagement/${item.item_id}`} className="flex items-center gap-2">
+            <Link href={`/inventoryManagement/${item.item_id}`} className="flex items-center gap-2">
               <Eye className="mr-2 h-4 w-4" />Detail
             </Link>
           </DropdownMenuItem>
@@ -105,7 +105,7 @@ export default function ItemActionDropdown({ item }: any) {
       <DropdownMenuContent align="end" className="w-32">
         {/* tombol Detail */}
         <DropdownMenuItem asChild>
-          <Link href={`/admin/inventoryManagement/${item.item_id}`} className="flex items-center gap-2">
+          <Link href={`/inventoryManagement/${item.item_id}`} className="flex items-center gap-2">
             <Eye className="mr-2 h-4 w-4" />Detail
           </Link>
         </DropdownMenuItem>

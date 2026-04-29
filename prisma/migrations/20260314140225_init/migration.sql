@@ -93,8 +93,8 @@ CREATE TABLE "Asset" (
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "qty" INTEGER NOT NULL,
-    "purcase_date" TIMESTAMP(3) NOT NULL,
-    "purcase_price" INTEGER,
+    "purchase_date" TIMESTAMP(3) NOT NULL,
+    "purchase_price" INTEGER,
     "status" INTEGER NOT NULL,
     "qr_code_path" TEXT NOT NULL,
 

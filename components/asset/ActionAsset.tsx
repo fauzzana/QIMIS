@@ -8,8 +8,8 @@ const schema = z.object({
   name: z.string().nullable(),
   description: z.string().nullable(),
   qty: z.number(),
-  purcase_date: z.date(),
-  purcase_price: z.number().nullable(),
+  purchase_date: z.date(),
+  purchase_price: z.number().nullable(),
   status: z.number(),
   image: z.string().nullable(),
 })
@@ -27,8 +27,8 @@ export type InsertFormData = {
   category_id: string;
   location_id: string;
   qty: number;
-  purcase_date: string;
-  purcase_price: number;
+  purchase_date: string;
+  purchase_price: number;
   status: "1" | "2" | "3" | "4";
   image?: string;
 };
@@ -46,8 +46,8 @@ export function handleInsert(formData: InsertFormData) {
           category_id: formData.category_id,
           location_id: formData.location_id,
           qty: formData.qty,
-          purcase_date: formData.purcase_date,
-          purcase_price: formData.purcase_price,
+          purchase_date: formData.purchase_date,
+          purchase_price: formData.purchase_price,
           status: Number(formData.status),
           image: formData.image,
         }),
@@ -87,8 +87,8 @@ export function handleEdit(asset: Asset) {
         name: asset.name,
         description: asset.description,
         qty: asset.qty,
-        purcase_date: asset.purcase_date,
-        purcase_price: asset.purcase_price,
+        purchase_date: asset.purchase_date,
+        purchase_price: asset.purchase_price,
         status: asset.status,
       }
 
@@ -98,8 +98,8 @@ export function handleEdit(asset: Asset) {
           name: formData.get("name") || asset.name,
           description: formData.get("description") || asset.description,
           qty: Number(formData.get("qty")) || asset.qty,
-          purcase_date: asset.purcase_date,
-          purcase_price: asset.purcase_price,
+          purchase_date: asset.purchase_date,
+          purchase_price: asset.purchase_price,
           status: Number(formData.get("status")) || asset.status,
         }
 

@@ -24,8 +24,8 @@ export async function GET() {
           }
         },
         qty: true,
-        purcase_date: true,
-        purcase_price: true,
+        purchase_date: true,
+        purchase_price: true,
         status: true,
         location: {
           select: {
@@ -36,7 +36,7 @@ export async function GET() {
         image: true,
       },
       orderBy: {
-        purcase_date: "desc",
+        purchase_date: "desc",
       },
     })
 
@@ -74,8 +74,8 @@ export async function POST(request: Request) {
       description,
       category_id,
       qty,
-      purcase_date,
-      purcase_price,
+      purchase_date,
+      purchase_price,
       status,
       location_id,
       image,
@@ -113,7 +113,7 @@ export async function POST(request: Request) {
     }
 
     const now = new Date()
-    const purcaseDateValue = purcase_date ? new Date(purcase_date) : now
+    const purchaseDateValue = purchase_date ? new Date(purchase_date) : now
 
     const newAsset = await prisma.asset.create({
       data: {
@@ -122,8 +122,8 @@ export async function POST(request: Request) {
         description: description || "",
         category_id: category.category_id,
         qty: Number(qty ?? 1),
-        purcase_date: purcaseDateValue,
-        purcase_price: purcase_price === null || purcase_price === undefined ? null : Number(purcase_price),
+        purchase_date: purchaseDateValue,
+        purchase_price: purchase_price === null || purchase_price === undefined ? null : Number(purchase_price),
         status: Number(status ?? 1),
         location_id: location.location_id,
         qr_code_path: "",
@@ -180,8 +180,8 @@ export async function PATCH(request: Request) {
       name,
       description,
       qty,
-      purcase_date,
-      purcase_price,
+      purchase_date,
+      purchase_price,
       status,
       category_id,
       location_id,
@@ -199,11 +199,11 @@ export async function PATCH(request: Request) {
       ...(name !== undefined ? { name } : {}),
       ...(description !== undefined ? { description } : {}),
       ...(qty !== undefined ? { qty: Number(qty) } : {}),
-      ...(purcase_date !== undefined
-        ? { purcase_date: new Date(purcase_date) }
+      ...(purchase_date !== undefined
+        ? { purchase_date: new Date(purchase_date) }
         : {}),
-      ...(purcase_price !== undefined
-        ? { purcase_price: purcase_price === null ? null : Number(purcase_price) }
+      ...(purchase_price !== undefined
+        ? { purchase_price: purchase_price === null ? null : Number(purchase_price) }
         : {}),
       ...(status !== undefined ? { status: Number(status) } : {}),
       ...(image !== undefined ? { image } : {}),

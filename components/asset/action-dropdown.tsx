@@ -45,7 +45,7 @@ export function AssetEditForm({ asset }: any) {
         <DropdownMenuContent align="end" className="w-32">
           {/* tombol Detail */}
           <DropdownMenuItem asChild>
-            <Link href={`/admin/assetManagement/${asset.asset_serial}`} className="flex items-center gap-2">
+            <Link href={`/assetManagement/${asset.asset_serial}`} className="flex items-center gap-2">
               <Eye className="mr-2 h-4 w-4" />Detail
             </Link>
           </DropdownMenuItem>
@@ -128,7 +128,7 @@ export function AssetEditForm({ asset }: any) {
       <DropdownMenuContent align="end" className="w-32">
         {/* tombol Detail */}
         <DropdownMenuItem asChild>
-          <Link href={`/admin/assetManagement/${asset.asset_serial}`} className="flex items-center gap-2">
+          <Link href={`/assetManagement/${asset.asset_serial}`} className="flex items-center gap-2">
             <Eye className="mr-2 h-4 w-4" />Detail
           </Link>
         </DropdownMenuItem>

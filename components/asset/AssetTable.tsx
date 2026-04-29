@@ -90,8 +90,8 @@ export const schema = z.object({
     category_name: z.string(),
   }),
   qty: z.number(),
-  purcase_date: z.date(),
-  purcase_price: z.number().nullable(),
+  purchase_date: z.date(),
+  purchase_price: z.number().nullable(),
   status: z.number(),
   location: z.object({
     location_name: z.string(),
@@ -193,10 +193,10 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     enableHiding: true,
   },
   {
-    accessorKey: "purcase_date",
+    accessorKey: "purchase_date",
     header: "Purchase Date",
     cell: ({ row }) => {
-      const purchaseDate = row.original.purcase_date
+      const purchaseDate = row.original.purchase_date
       return (
         <div className="flex items-center gap-2 p-2">
           <span>{purchaseDate.toDateString()}</span>
@@ -205,10 +205,10 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     }
   },
   {
-    accessorKey: "purcase_price",
+    accessorKey: "purchase_price",
     header: "Purchase Price",
     cell: ({ row }) => {
-      const purchasePrice = row.original.purcase_price
+      const purchasePrice = row.original.purchase_price
       return (
         <div className="flex items-center gap-2">
           <span>{purchasePrice}</span>
@@ -387,8 +387,8 @@ export function AssetTable({
         asset.description?.toLowerCase().includes(search) ||
         asset.category.category_name.toLowerCase().includes(search) ||
         asset.location.location_name.toLowerCase().includes(search) ||
-        asset.purcase_date.toLocaleDateString().toLowerCase().includes(search) ||
-        asset.purcase_price?.toString().toLowerCase().includes(search) ||
+        asset.purchase_date.toLocaleDateString().toLowerCase().includes(search) ||
+        asset.purchase_price?.toString().toLowerCase().includes(search) ||
         getStatusLabel(asset.status).toLowerCase().includes(search) ||
         asset.location.location_name.toLowerCase().includes(search)
       )
@@ -460,13 +460,13 @@ export function AssetTable({
             </DropdownMenu>
           </div>
           <div className="flex items-center gap-2">
-            <Link href="/admin/assetManagement/addSection">
+            <Link href="/assetManagement/addSection">
               <Button variant="outline" size="sm" className="cursor-pointer">
                 <IconPlus />
                 <span className="hidden lg:inline">Add Section</span>
               </Button>
             </Link>
-            <Link href="/admin/assetManagement/assetMaintenance">
+            <Link href="/assetManagement/assetMaintenance">
               <Button variant="destructive" size="sm" className="cursor-pointer">
                 <Wrench />
                 <span className="hidden lg:inline">Asset Maintenance</span>

@@ -40,8 +40,8 @@ export async function GET(
           }
         },
         qty: true,
-        purcase_date: true,
-        purcase_price: true,
+        purchase_date: true,
+        purchase_price: true,
         status: true,
         location: {
           select: {

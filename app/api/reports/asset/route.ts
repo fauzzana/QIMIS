@@ -23,7 +23,7 @@ export async function GET(request: Request) {
 
     // Date filter
     if (fromDate && toDate) {
-      where.purcase_date = {
+      where.purchase_date = {
         gte: new Date(fromDate),
         lte: new Date(toDate),
       }
@@ -54,7 +54,7 @@ export async function GET(request: Request) {
         }
       },
       orderBy: {
-        purcase_date: "desc",
+        purchase_date: "desc",
       },
     })
 
@@ -65,8 +65,8 @@ export async function GET(request: Request) {
       category: item.category.category_name,
       location: item.location.location_name,
       quantity: item.qty,
-      purchaseDate: item.purcase_date.toISOString().split('T')[0],
-      purchasePrice: item.purcase_price ? `Rp ${item.purcase_price.toLocaleString('id-ID')}` : null,
+      purchaseDate: item.purchase_date.toISOString().split('T')[0],
+      purchasePrice: item.purchase_price ? `Rp ${item.purchase_price.toLocaleString('id-ID')}` : null,
       status: item.status === 1 ? "Active" : item.status === 2 ? "Inactive" : "Maintenance",
       description: item.description,
     }))

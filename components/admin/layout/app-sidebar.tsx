@@ -42,17 +42,17 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "/admin/dashboard",
+      url: "/dashboard",
       icon: IconHome,
     },
     {
       title: "Users",
-      url: "/admin/userManagement",
+      url: "/userManagement",
       icon: IconUsers,
     },
     {
       title: "Reports",
-      url: "/admin/reports",
+      url: "/reports",
       icon: IconFileDescription
     }
   ],
@@ -76,34 +76,34 @@ const data = {
   inventory: [
     {
       name: "Data Assets",
-      url: "/admin/assetManagement",
+      url: "/assetManagement",
       icon: IconAsset,
     },
     {
       name: "Data Items",
-      url: "/admin/inventoryManagement",
+      url: "/inventoryManagement",
       icon: IconPackages,
     },
     {
       name: "Transaction Items",
-      url: "/admin/transaction",
+      url: "/transaction",
       icon: IconBuildingWarehouse,
     },
     {
       name: "Scan QR Code",
-      url: "/admin/scan",
+      url: "/scan",
       icon: IconQrcode,
     },
   ],
   more: [
     {
       name: "Location",
-      url: "/admin/more/location",
+      url: "/more/location",
       icon: IconLocation,
     },
     {
       name: "Category",
-      url: "/admin/more/category",
+      url: "/more/category",
       icon: IconCategory,
     },
   ]

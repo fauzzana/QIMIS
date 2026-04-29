@@ -72,7 +72,7 @@ const columns: ColumnDef<any>[] = [
     accessorKey: "asset_serial",
     header: "Serial",
     cell: ({ row }) => (
-      <Link href={`/admin/assetManagement/${row.original.asset_serial}`}>
+      <Link href={`/assetManagement/${row.original.asset_serial}`}>
         <span>{row.original.asset_serial}</span>
       </Link>
     ),

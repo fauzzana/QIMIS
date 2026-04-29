@@ -412,7 +412,7 @@ export function ItemTable({
             </DropdownMenu>
           </div>
           <div className="flex items-center gap-2">
-            <Link href="/admin/inventoryManagement/addItem">
+            <Link href="/inventoryManagement/addItem">
               <Button variant="outline" size="sm" className="cursor-pointer">
                 <IconPlus />
                 <span className="hidden lg:inline">Add Item</span>

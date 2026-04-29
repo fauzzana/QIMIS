@@ -19,8 +19,8 @@ interface Asset {
     category_name: string;
   };
   qty: number;
-  purcase_date: Date;
-  purcase_price: number | null;
+  purchase_date: Date;
+  purchase_price: number | null;
   status: number;
   location: {
     location_name: string;
@@ -73,13 +73,13 @@ export function DetailAsset({ asset }: DetailAssetProps) {
           <div>
             <label className="font-semibold">Purchase Date:</label>
             <p className="text-muted-foreground">
-              {new Date(asset.purcase_date).toDateString()}
+              {new Date(asset.purchase_date).toDateString()}
             </p>
           </div>
           <div>
             <label className="font-semibold">Purchase Price:</label>
             <p className="text-muted-foreground">
-              {asset.purcase_price ? `Rp${asset.purcase_price}` : "N/A"}
+              {asset.purchase_price ? `Rp${asset.purchase_price}` : "N/A"}
             </p>
           </div>
           <div>
