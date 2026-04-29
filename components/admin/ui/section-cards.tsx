@@ -50,7 +50,7 @@ export function SectionCards({
           <div>
             <h3 className="text-lg font-semibold mb-4 text-muted-foreground">Asset Management</h3>
             <div className="grid grid-cols-1 @xl/main:grid-cols-2 @5xl/main:grid-cols-4 gap-4 *:data-[slot=card]:bg-linear-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs dark:*:data-[slot=card]:bg-card">
-              <Card className="@container/card">
+              <Card className="@container/card justify-between">
                 <CardHeader>
                   <CardTitle>Total Asset</CardTitle>
                   <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
@@ -71,7 +71,7 @@ export function SectionCards({
 
               <ChartPieAsset data={assetStatusData} />
 
-              <Card className="@container/card">
+              <Card className="@container/card justify-between">
                 <CardHeader>
                   <CardTitle>Total Maintenance</CardTitle>
                   <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
@@ -90,7 +90,7 @@ export function SectionCards({
                 </CardFooter>
               </Card>
 
-              <Card className="@container/card">
+              <Card className="@container/card justify-between">
                 <CardHeader>
                   <CardTitle>Asset Value</CardTitle>
                   <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
