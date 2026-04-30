@@ -31,8 +31,8 @@ export function EditDialogContent({ asset }: any) {
   const [description, setDescription] = useState(asset.description || "")
   const [qty, setQty] = useState(asset.qty || 0)
   const [status, setStatus] = useState(asset.status.toString())
-  const [categoryId, setCategoryId] = useState(asset.category?.category_id || "")
-  const [locationId, setLocationId] = useState(asset.location?.location_id || "")
+  const [categoryId, setCategoryId] = React.useState(asset.category?.category_id || "")
+  const [locationId, setLocationId] = React.useState(asset.location?.location_id || "")
 
   useEffect(() => {
     async function loadOptions() {
@@ -84,7 +84,7 @@ export function EditDialogContent({ asset }: any) {
           <Label>Category</Label>
           <Select value={categoryId} onValueChange={setCategoryId}>
             <SelectTrigger className="mt-1">
-              <SelectValue />
+              <SelectValue placeholder="select category" />
             </SelectTrigger>
             <SelectContent>
               {categories.map((category) => (
@@ -99,7 +99,7 @@ export function EditDialogContent({ asset }: any) {
           <Label>Location</Label>
           <Select value={locationId} onValueChange={setLocationId}>
             <SelectTrigger className="mt-1">
-              <SelectValue />
+              <SelectValue placeholder="select location" />
             </SelectTrigger>
             <SelectContent>
               {locations.map((location) => (
@@ -118,7 +118,7 @@ export function EditDialogContent({ asset }: any) {
           <Label>Status</Label>
           <Select value={status} onValueChange={setStatus}>
             <SelectTrigger className="mt-1">
-              <SelectValue />
+              <SelectValue placeholder="select status" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="1">Available</SelectItem>
@@ -238,7 +238,7 @@ export function EditDrawerContent({ asset }: any) {
           <Label>Category</Label>
           <Select value={categoryId} onValueChange={setCategoryId}>
             <SelectTrigger className="mt-1">
-              <SelectValue />
+              <SelectValue placeholder="select category" />
             </SelectTrigger>
             <SelectContent>
               {categories.map((category) => (
@@ -253,7 +253,7 @@ export function EditDrawerContent({ asset }: any) {
           <Label>Location</Label>
           <Select value={locationId} onValueChange={setLocationId}>
             <SelectTrigger className="mt-1">
-              <SelectValue />
+              <SelectValue placeholder="select location" />
             </SelectTrigger>
             <SelectContent>
               {locations.map((location) => (
@@ -272,7 +272,7 @@ export function EditDrawerContent({ asset }: any) {
           <Label>Status</Label>
           <Select value={status} onValueChange={setStatus}>
             <SelectTrigger className="mt-1">
-              <SelectValue />
+              <SelectValue placeholder="select status" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="1">Available</SelectItem>

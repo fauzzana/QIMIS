@@ -84,7 +84,7 @@ export function EditDialog({ item }: any) {
             <Label>Category</Label>
             <Select value={categoryId} onValueChange={setCategoryId}>
               <SelectTrigger className="mt-1">
-                <SelectValue />
+                <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent>
                 {categories.map((category) => (
@@ -99,7 +99,7 @@ export function EditDialog({ item }: any) {
             <Label>Location</Label>
             <Select value={locationId} onValueChange={setLocationId}>
               <SelectTrigger className="mt-1">
-                <SelectValue />
+                <SelectValue placeholder="Select location" />
               </SelectTrigger>
               <SelectContent>
                 {locations.map((location) => (
@@ -214,7 +214,7 @@ export function EditDrawer({ item }: any) {
             <Label>Category</Label>
             <Select value={categoryId} onValueChange={setCategoryId}>
               <SelectTrigger className="mt-1">
-                <SelectValue />
+                <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent>
                 {categories.map((category) => (
@@ -229,7 +229,7 @@ export function EditDrawer({ item }: any) {
             <Label>Location</Label>
             <Select value={locationId} onValueChange={setLocationId}>
               <SelectTrigger className="mt-1">
-                <SelectValue />
+                <SelectValue placeholder="Select location" />
               </SelectTrigger>
               <SelectContent>
                 {locations.map((location) => (
