@@ -58,8 +58,8 @@ export async function GET(request: Request) {
       },
     })
 
-    // Transform data to match table columns
-    const transformedData = assetData.map((item) => ({
+// Transform data to match table columns
+    const transformedData = assetData.map((item: any) => ({
       assetSerial: item.asset_serial,
       name: item.name,
       category: item.category.category_name,

@@ -11,12 +11,10 @@ export default async function Page() {
     redirect("/");
   }
 
-  // Fetch dashboard data
   const totalAssets = await prisma.asset.count();
   const totalItems = await prisma.item.count();
   const totalMaintenances = await prisma.assetMaintenance.count();
 
-  // Calculate total asset value
   const assetValueResult = await prisma.asset.aggregate({
     _sum: {
       purchase_price: true,
@@ -24,19 +22,16 @@ export default async function Page() {
   });
   const totalAssetValue = assetValueResult._sum.purchase_price || 0;
 
-  // Asset status distribution
   const assetStatusData = await prisma.asset.groupBy({
     by: ['status'],
     _count: { status: true },
   });
 
-  // Item status distribution
   const itemStatusData = await prisma.item.groupBy({
     by: ['status'],
     _count: { status: true },
   });
 
-  // Transaction data for bar chart (last 3 months)
   const threeMonthsAgo = new Date();
   threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
   const transactionData = await prisma.transaction.findMany({
@@ -51,11 +46,10 @@ export default async function Page() {
     },
   });
 
-  // Group transactions by month
-  const monthlyTransactions = transactionData.reduce((acc, tx) => {
-    const month = tx.created_at.toISOString().slice(0, 7); // YYYY-MM
+  const monthlyTransactions = transactionData.reduce((acc: Record<string, { borrow: number; return: number }>, tx: { created_at: Date; action: boolean }) => {
+    const month = tx.created_at.toISOString().slice(0, 7);
     if (!acc[month]) acc[month] = { borrow: 0, return: 0 };
-    if (tx.action) { // assuming true = borrow
+    if (tx.action) {
       acc[month].borrow++;
     } else {
       acc[month].return++;
@@ -65,11 +59,10 @@ export default async function Page() {
 
   const chartData = Object.entries(monthlyTransactions).map(([month, counts]) => ({
     date: month + '-01',
-    borrow: counts.borrow,
-    return: counts.return,
+    borrow: (counts as { borrow: number; return: number }).borrow,
+    return: (counts as { borrow: number; return: number }).return,
   }));
 
-  // Notifications: pending maintenances and low stock items
   const pendingMaintenances = await prisma.assetMaintenance.findMany({
     where: { status_maintain: 0 },
     include: { asset: true },

@@ -61,8 +61,8 @@ export async function GET(request: Request) {
       },
     })
 
-    // Transform data to match table columns
-    const transformedData = maintenanceData.map((item) => ({
+// Transform data to match table columns
+    const transformedData = maintenanceData.map((item: any) => ({
       status: item.status_maintain === 1 ? "Completed" : item.status_maintain === 2 ? "In Progress" : "Pending",
       assetSerial: item.asset_serial,
       condition: item.condition === 1 ? "Good" : item.condition === 2 ? "Fair" : "Poor",

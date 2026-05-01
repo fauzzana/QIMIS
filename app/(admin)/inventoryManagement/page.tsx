@@ -60,7 +60,7 @@ export default async function itemPage() {
             </p>
           </div>
           <div className="px-4 lg:px-6">
-            <ItemTable data={items} />
+            <ItemTable data={items} basePath="/inventoryManagement" />
           </div>
         </div>
       </div>

@@ -55,7 +55,7 @@ export async function POST(request: Request) {
       select: { location_id: true },
     })
 
-    const nextNumber = locations.reduce((max, location) => {
+const nextNumber = locations.reduce((max: number, location: { location_id: string }) => {
       const match = location.location_id.match(/^loc(\d+)$/i)
       if (!match) return max
       return Math.max(max, parseInt(match[1], 10))

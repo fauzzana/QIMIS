@@ -73,9 +73,9 @@ export async function GET(request: Request) {
       },
     })
 
-    // Transform data to match table columns
-    const transformedData = transactionData.flatMap((transaction) =>
-      transaction.details.map((detail) => ({
+// Transform data to match table columns
+    const transformedData = transactionData.flatMap((transaction: any) =>
+      transaction.details.map((detail: any) => ({
         transactionId: transaction.id,
         user: transaction.user.name || transaction.user.email,
         action: transaction.action ? "Check Out" : "Check In",

@@ -55,7 +55,7 @@ export async function POST(request: Request) {
       select: { category_id: true },
     })
 
-    const nextNumber = categories.reduce((max, category) => {
+const nextNumber = categories.reduce((max: number, category: { category_id: string }) => {
       const match = category.category_id.match(/^cat(\d+)$/i)
       if (!match) return max
       return Math.max(max, parseInt(match[1], 10))

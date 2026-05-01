@@ -24,7 +24,7 @@ async function getMaintenanceAssets() {
     },
   })
 
-  return assets.map(asset => ({
+  return assets.map((asset: any) => ({
     asset_serial: asset.asset_serial,
     name: asset.name,
     description: asset.description,
@@ -41,7 +41,7 @@ async function getMaintenanceAssets() {
     qr_code_path: asset.qr_code_path,
     image: asset.image,
     condition: asset.maintenances[0]?.condition,
-    maintenance: asset.maintenances.map(m => ({
+    maintenance: asset.maintenances.map((m: any) => ({
       maintenance_id: m.maintenance_id,
       attachment: m.attachment,
       create_at: m.create_at.toISOString(),
@@ -64,7 +64,7 @@ export default async function assetPage() {
     <div className="flex flex-3 flex-col">
       <header className="sticky top-0 flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 bg-white z-10">
         <PageHeader items={[
-          { label: "Dashboard", href: "/s/dashboard" },
+          { label: "Dashboard", href: "/dashboard" },
           { label: "Data Asset", href: "/s/assetManagement" },
           { label: "Asset Maintenance" },
         ]} />

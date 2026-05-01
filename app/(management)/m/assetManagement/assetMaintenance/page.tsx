@@ -7,7 +7,7 @@ import { PageHeader } from "@/components/layout/PageHeader";
 async function getMaintenanceAssets() {
   const assets = await prisma.asset.findMany({
     where: {
-      // status: 3, // Maintenance status
+      // status: 3, 
     },
     include: {
       category: true,
@@ -24,7 +24,7 @@ async function getMaintenanceAssets() {
     },
   })
 
-  return assets.map(asset => ({
+  return assets.map((asset: any) => ({
     asset_serial: asset.asset_serial,
     name: asset.name,
     description: asset.description,
@@ -41,7 +41,7 @@ async function getMaintenanceAssets() {
     qr_code_path: asset.qr_code_path,
     image: asset.image,
     condition: asset.maintenances[0]?.condition,
-    maintenance: asset.maintenances.map(m => ({
+    maintenance: asset.maintenances.map((m: any) => ({
       maintenance_id: m.maintenance_id,
       attachment: m.attachment,
       create_at: m.create_at.toISOString(),
