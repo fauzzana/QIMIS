@@ -17,7 +17,7 @@ type User = z.infer<typeof schema> & {
 }
 
 export function handleEdit(user: User) {
-  return async (updateData?: { name: string; role: "ADMIN" | "MANAGEMENT" | "STAFF"; department_name: string }) => {
+  return async (updateData?: { name: string; role: "ADMIN" | "MANAGEMENT" | "STAFF" | "GUEST"; department_name: string }) => {
     try {
       const dataToSend = updateData || {
         name: user.name || "",

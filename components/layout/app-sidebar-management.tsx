@@ -16,11 +16,11 @@ import {
   IconFileDescription
 } from "@tabler/icons-react"
 
-import { NavMore } from "@/components/admin/layout/nav-more"
-import { NavInventory } from "@/components/admin/layout/nav-inventory"
-import { NavMain } from "@/components/admin/layout/nav-main"
-import { NavSecondary } from "@/components/admin/layout/nav-secondary"
-import { NavUser } from "@/components/admin/layout/nav-user"
+import { NavMore } from "@/components/layout/nav-more"
+import { NavInventory } from "@/components/layout/nav-inventory"
+import { NavMain } from "@/components/layout/nav-main"
+import { NavSecondary } from "@/components/layout/nav-secondary"
+import { NavUser } from "@/components/layout/nav-user"
 import {
   Sidebar,
   SidebarContent,
@@ -42,68 +42,53 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "/dashboard",
+      url: "/m/dashboard",
       icon: IconHome,
     },
     {
-      title: "Users",
-      url: "/userManagement",
-      icon: IconUsers,
-    },
-    {
       title: "Reports",
-      url: "/reports",
+      url: "/m/reports",
       icon: IconFileDescription
     }
   ],
   navSecondary: [
     {
-      title: "Settings",
-      url: "#",
-      icon: IconSettings,
-    },
-    {
       title: "Get Help",
       url: "#",
       icon: IconHelp,
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: IconSearch,
-    },
+    }
   ],
   inventory: [
     {
       name: "Data Assets",
-      url: "/assetManagement",
+      url: "/m/assetManagement",
       icon: IconAsset,
     },
     {
       name: "Data Items",
-      url: "/inventoryManagement",
+      url: "/m/inventoryManagement",
       icon: IconPackages,
     },
     {
       name: "Transaction Items",
-      url: "/transaction",
+      url: "/m/transaction",
       icon: IconBuildingWarehouse,
     },
     {
       name: "Scan QR Code",
-      url: "/scan",
+      url: "/m/scan",
       icon: IconQrcode,
     },
   ],
   more: [
     {
       name: "Location",
-      url: "/more/location",
+      url: "/m/more/location",
       icon: IconLocation,
     },
     {
       name: "Category",
-      url: "/more/category",
+      url: "/m/more/category",
       icon: IconCategory,
     },
   ]

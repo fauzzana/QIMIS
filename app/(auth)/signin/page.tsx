@@ -22,11 +22,11 @@ export default async function AuthPage() {
   }
 
   if (role === "MANAGEMENT") {
-    redirect("/management/dashboard")
+    redirect("/m/dashboard")
   }
 
   if (role === "STAFF") {
-    redirect("/operational/dashboard")
+    redirect("/s/dashboard")
   }
 
   if (role === "GUEST") {

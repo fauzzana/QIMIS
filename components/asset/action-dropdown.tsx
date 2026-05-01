@@ -18,7 +18,7 @@ import {
 } from "lucide-react"
 
 
-export function AssetEditForm({ asset }: any) {
+export function AssetEditForm({ asset, basePath }: any) {
   const { performDelete, performQr, isDeleting } = useAssetActions(asset)
   const [openQr, setOpenQr] = React.useState(false)
   const [openMaintenance, setOpenMaintenance] = React.useState(false)
@@ -45,7 +45,7 @@ export function AssetEditForm({ asset }: any) {
         <DropdownMenuContent align="end" className="w-32">
           {/* tombol Detail */}
           <DropdownMenuItem asChild>
-            <Link href={`/assetManagement/${asset.asset_serial}`} className="flex items-center gap-2">
+            <Link href={`${basePath}/${asset.asset_serial}`} className="flex items-center gap-2">
               <Eye className="mr-2 h-4 w-4" />Detail
             </Link>
           </DropdownMenuItem>
@@ -128,7 +128,7 @@ export function AssetEditForm({ asset }: any) {
       <DropdownMenuContent align="end" className="w-32">
         {/* tombol Detail */}
         <DropdownMenuItem asChild>
-          <Link href={`/assetManagement/${asset.asset_serial}`} className="flex items-center gap-2">
+          <Link href={`${basePath}/${asset.asset_serial}`} className="flex items-center gap-2">
             <Eye className="mr-2 h-4 w-4" />Detail
           </Link>
         </DropdownMenuItem>

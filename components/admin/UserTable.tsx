@@ -103,7 +103,7 @@ export const schema = z.object({
   id: z.string(),
   name: z.string().nullable(),
   email: z.string().nullable(),
-  role: z.enum(["ADMIN", "MANAGEMENT", "STAFF"]),
+  role: z.enum(["ADMIN", "MANAGEMENT", "STAFF", "GUEST"]),
   userId: z.string().nullable(),
   department: z.object({
     depart_name: z.string().nullable(),
@@ -307,7 +307,7 @@ export function UserTable({ data: initialData }: { data: z.infer<typeof schema>[
                       </div>
                       <div>
                         <Label>Role</Label>
-                        <Select value={editRole} onValueChange={(value: "ADMIN" | "MANAGEMENT" | "STAFF") => setEditRole(value)}>
+                        <Select value={editRole} onValueChange={(value: "ADMIN" | "MANAGEMENT" | "STAFF" | "GUEST") => setEditRole(value)}>
                           <SelectTrigger className="mt-1">
                             <SelectValue />
                           </SelectTrigger>
@@ -315,6 +315,7 @@ export function UserTable({ data: initialData }: { data: z.infer<typeof schema>[
                             <SelectItem value="ADMIN">ADMIN</SelectItem>
                             <SelectItem value="MANAGEMENT">MANAGEMENT</SelectItem>
                             <SelectItem value="STAFF">STAFF</SelectItem>
+                            <SelectItem value="GUEST">GUEST</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>

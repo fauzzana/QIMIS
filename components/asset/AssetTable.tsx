@@ -100,7 +100,7 @@ export const schema = z.object({
   image: z.string().nullable(),
 })
 
-const columns: ColumnDef<z.infer<typeof schema>>[] = [
+const getColumns = (basePath: string): ColumnDef<z.infer<typeof schema>>[] => [
   {
     id: "drag",
     header: () => null,
@@ -245,7 +245,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     cell: ({ row }) => {
       return (
         <div>
-          <AssetEditForm asset={row.original} />
+          <AssetEditForm asset={row.original} basePath={basePath} />
         </div>
       )
     }
@@ -326,9 +326,12 @@ function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
 
 export function AssetTable({
   data: initialData,
+  basePath,
 }: {
-  data: z.infer<typeof schema>[]
+  data: z.infer<typeof schema>[],
+  basePath: string
 }) {
+  const columns = React.useMemo(() => getColumns(basePath), [basePath])
   const [data, setData] = React.useState(() => initialData)
   const [globalFilter, setGlobalFilter] = React.useState("")
   const [rowSelection, setRowSelection] = React.useState({})
@@ -460,13 +463,13 @@ export function AssetTable({
             </DropdownMenu>
           </div>
           <div className="flex items-center gap-2">
-            <Link href="/assetManagement/addSection">
+            <Link href={`${basePath}/addSection`}>
               <Button variant="outline" size="sm" className="cursor-pointer">
                 <IconPlus />
                 <span className="hidden lg:inline">Add Section</span>
               </Button>
             </Link>
-            <Link href="/assetManagement/assetMaintenance">
+            <Link href={`${basePath}/assetMaintenance`}>
               <Button variant="destructive" size="sm" className="cursor-pointer">
                 <Wrench />
                 <span className="hidden lg:inline">Asset Maintenance</span>

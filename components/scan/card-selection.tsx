@@ -22,7 +22,13 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { QRScannerAsset, QRScannerItem } from "./Scanner"
 
-export function CardImage() {
+export function CardImage({
+  assetBasePath,
+  itemBasePath,
+}: {
+  assetBasePath: string
+  itemBasePath: string
+}) {
   const router = useRouter()
   const [isAssetDialogOpen, setIsAssetDialogOpen] = useState(false)
   const [isItemDialogOpen, setIsItemDialogOpen] = useState(false)
@@ -30,7 +36,7 @@ export function CardImage() {
   const handleAssetScan = (result: string | null) => {
     if (result && result !== "undefined") {
       setIsAssetDialogOpen(false)
-      router.push(`/assetManagement/${encodeURIComponent(result)}`)
+      router.push(`${assetBasePath}/${encodeURIComponent(result)}`)
       return
     }
 
@@ -40,7 +46,7 @@ export function CardImage() {
   const handleItemScan = (result: string | null) => {
     if (result && result !== "undefined") {
       setIsItemDialogOpen(false)
-      router.push(`/inventoryManagement/${encodeURIComponent(result)}`)
+      router.push(`${itemBasePath}/${encodeURIComponent(result)}`)
       return
     }
 

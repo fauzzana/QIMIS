@@ -1,5 +1,5 @@
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { AppSidebar } from "@/components/admin/layout/app-sidebar";
+import { AppSidebar } from "@/components/layout/app-sidebar-management";
 import {
   SidebarInset,
   SidebarProvider,

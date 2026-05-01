@@ -7,7 +7,7 @@ export async function GET() {
   try {
     const session = await auth()
 
-    if (!session?.user?.role || session.user.role !== "ADMIN") {
+    if (!session?.user?.role || session.user.role !== "ADMIN" && session.user.role !== "MANAGEMENT" && session.user.role !== "STAFF") {
       return NextResponse.json(
         { error: "Unauthorized - Admin access required" },
         { status: 403 }
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
   try {
     const session = await auth()
 
-    if (!session?.user?.role || session.user.role !== "ADMIN") {
+    if (!session?.user?.role || session.user.role !== "ADMIN" && session.user.role !== "MANAGEMENT" && session.user.role !== "STAFF") {
       return NextResponse.json(
         { error: "Unauthorized - Admin access required" },
         { status: 403 }
@@ -169,7 +169,7 @@ export async function PATCH(request: Request) {
   try {
     const session = await auth()
 
-    if (!session?.user?.role || session.user.role !== "ADMIN") {
+    if (!session?.user?.role || session.user.role !== "ADMIN" && session.user.role !== "MANAGEMENT" && session.user.role !== "STAFF") {
       return NextResponse.json(
         { error: "Unauthorized - Admin access required" },
         { status: 403 }
@@ -236,7 +236,7 @@ export async function DELETE(request: Request) {
   try {
     const session = await auth()
 
-    if (!session?.user?.role || session.user.role !== "ADMIN") {
+    if (!session?.user?.role || session.user.role !== "ADMIN" && session.user.role !== "MANAGEMENT" && session.user.role !== "STAFF") {
       return NextResponse.json(
         { error: "Unauthorized - Admin access required" },
         { status: 403 }

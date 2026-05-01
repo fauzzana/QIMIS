@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog"
 import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter, DrawerClose } from "@/components/ui/drawer"
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
@@ -8,7 +8,6 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select"
 import { Edit } from "lucide-react"
 import { useAssetActions } from "@/hooks/useAssetActions"
-import { Separator } from "@/components/ui/separator"
 
 interface Category {
   category_id: string
@@ -130,7 +129,9 @@ export function EditDialogContent({ asset }: any) {
         </div>
       </div>
       <div className="flex gap-2 p-2 justify-end">
-        <Button variant="outline" onClick={() => setOpenEdit(false)}>Cancel</Button>
+        <DialogClose asChild>
+          <Button variant="outline" onClick={() => setOpenEdit(false)}>Cancel</Button>
+        </DialogClose>
         <Button
           onClick={async () => {
             const formData = new FormData();

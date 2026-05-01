@@ -40,7 +40,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { useEffect, useState } from "react";
-import { handleLogout } from "../../auth/action";
+import { handleLogout } from "../auth/action";
 
 export function NavUser({
   user,

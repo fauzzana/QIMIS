@@ -102,7 +102,7 @@ export const schema = z.object({
   image: z.string().nullable(),
 })
 
-const columns: ColumnDef<z.infer<typeof schema>>[] = [
+const getColumns = (basePath: string): ColumnDef<z.infer<typeof schema>>[] => [
   {
     id: "drag",
     header: () => null,
@@ -209,7 +209,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     cell: ({ row }) => {
       return (
         <div>
-          <ItemActionDropdown item={row.original} />
+          <ItemActionDropdown item={row.original} basePath={basePath} />
         </div>
       )
     }
@@ -282,9 +282,12 @@ function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
 
 export function ItemTable({
   data: initialData,
+  basePath,
 }: {
-  data: z.infer<typeof schema>[]
+  data: z.infer<typeof schema>[],
+  basePath: string
 }) {
+  const columns = React.useMemo(() => getColumns(basePath), [basePath])
   const [data, setData] = React.useState(() => initialData)
   const [globalFilter, setGlobalFilter] = React.useState("")
   const [rowSelection, setRowSelection] = React.useState({})
@@ -412,7 +415,7 @@ export function ItemTable({
             </DropdownMenu>
           </div>
           <div className="flex items-center gap-2">
-            <Link href="/inventoryManagement/addItem">
+            <Link href={`${basePath}/addItem`}>
               <Button variant="outline" size="sm" className="cursor-pointer">
                 <IconPlus />
                 <span className="hidden lg:inline">Add Item</span>
