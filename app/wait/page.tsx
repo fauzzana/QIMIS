@@ -1,13 +1,30 @@
-import { IconCloud } from "@tabler/icons-react"
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
+import { IconCloud } from "@tabler/icons-react";
 import {
   Empty,
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty"
+} from "@/components/ui/empty";
 
-export default function EmptyOutline() {
+export default async function WaitPage() {
+  const session = await auth();
+  const role = session?.user?.role;
+
+  if (role === "ADMIN") {
+    redirect("/dashboard");
+  }
+
+  if (role === "MANAGEMENT") {
+    redirect("/m/dashboard");
+  }
+
+  if (role === "STAFF") {
+    redirect("/s/dashboard");
+  }
+
   return (
     <Empty className="border border-dashed mt-50">
       <EmptyHeader>
@@ -20,5 +37,5 @@ export default function EmptyOutline() {
         </EmptyDescription>
       </EmptyHeader>
     </Empty>
-  )
+  );
 }
