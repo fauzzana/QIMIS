@@ -260,7 +260,6 @@ export function UserTable({ data: initialData }: { data: z.infer<typeof schema>[
         const [editName, setEditName] = React.useState(row.original.name || "")
         const [editRole, setEditRole] = React.useState(row.original.role)
         const [editDepartment, setEditDepartment] = React.useState(row.original.department?.depart_name || "")
-        const isDesktop = useMediaQuery("(min-width: 768px)")
 
         const edit = handleEdit({
           ...row.original,
@@ -269,100 +268,98 @@ export function UserTable({ data: initialData }: { data: z.infer<typeof schema>[
           },
         } as any)
 
-        if (isDesktop) {
-          return (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <MoreHorizontal />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <Dialog open={openEdit} onOpenChange={setOpenEdit}>
-                  {/* tombol edit */}
-                  <DialogTrigger asChild>
-                    <DropdownMenuItem onSelect={(event) => event.preventDefault()}>
-                      <Edit className="mr-2 h-4 w-4" /> Edit
-                    </DropdownMenuItem>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Edit User</DialogTitle>
-                      <DialogDescription>
-                        edit the user information here.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="space-y-4">
-                      <div>
-                        <Label>ID</Label>
-                        <Input disabled value={row.original.id} className="mt-1" />
-                      </div>
-                      <div>
-                        <Label>Name</Label>
-                        <Input name="name" value={editName} onChange={(e) => setEditName(e.target.value)} className="mt-1" />
-                      </div>
-                      <div>
-                        <Label>Email</Label>
-                        <Input disabled name="email" value={row.original.email || ""} className="mt-1" />
-                      </div>
-                      <div>
-                        <Label>Role</Label>
-                        <Select value={editRole} onValueChange={(value: "ADMIN" | "MANAGEMENT" | "STAFF" | "GUEST") => setEditRole(value)}>
-                          <SelectTrigger className="mt-1">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="ADMIN">ADMIN</SelectItem>
-                            <SelectItem value="MANAGEMENT">MANAGEMENT</SelectItem>
-                            <SelectItem value="STAFF">STAFF</SelectItem>
-                            <SelectItem value="GUEST">GUEST</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <Label>Department</Label>
-                        <Select value={editDepartment} onValueChange={setEditDepartment}>
-                          <SelectTrigger className="mt-1">
-                            <SelectValue placeholder="Select department" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {departments.map((dept) => (
-                              <SelectItem key={dept.depart_id} value={dept.depart_name}>
-                                {dept.depart_name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <MoreHorizontal />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <Dialog open={openEdit} onOpenChange={setOpenEdit}>
+                {/* tombol edit */}
+                <DialogTrigger asChild>
+                  <DropdownMenuItem onSelect={(event) => event.preventDefault()}>
+                    <Edit className="mr-2 h-4 w-4" /> Edit
+                  </DropdownMenuItem>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Edit User</DialogTitle>
+                    <DialogDescription>
+                      edit the user information here.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div>
+                      <Label>ID</Label>
+                      <Input disabled value={row.original.id} className="mt-1" />
                     </div>
-                    <div className="flex gap-2">
-                      <Button variant="outline" onClick={() => setOpenEdit(false)}>Cancel</Button>
-                      <Button onClick={async (e) => {
-                        const updateData = {
-                          name: editName,
-                          role: editRole,
-                          department_name: editDepartment,
-                        }
-                        await edit(updateData);
-                        setOpenEdit(false);
-                      }}>Save Changes</Button>
+                    <div>
+                      <Label>Name</Label>
+                      <Input name="name" value={editName} onChange={(e) => setEditName(e.target.value)} className="mt-1" />
                     </div>
-                  </DialogContent>
-                </Dialog>
+                    <div>
+                      <Label>Email</Label>
+                      <Input disabled name="email" value={row.original.email || ""} className="mt-1" />
+                    </div>
+                    <div>
+                      <Label>Role</Label>
+                      <Select value={editRole} onValueChange={(value: "ADMIN" | "MANAGEMENT" | "STAFF" | "GUEST") => setEditRole(value)}>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="ADMIN">ADMIN</SelectItem>
+                          <SelectItem value="MANAGEMENT">MANAGEMENT</SelectItem>
+                          <SelectItem value="STAFF">STAFF</SelectItem>
+                          <SelectItem value="GUEST">GUEST</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>Department</Label>
+                      <Select value={editDepartment} onValueChange={setEditDepartment}>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue placeholder="Select department" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {departments.map((dept) => (
+                            <SelectItem key={dept.depart_id} value={dept.depart_name}>
+                              {dept.depart_name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" onClick={() => setOpenEdit(false)}>Cancel</Button>
+                    <Button onClick={async (e) => {
+                      const updateData = {
+                        name: editName,
+                        role: editRole,
+                        department_name: editDepartment,
+                      }
+                      await edit(updateData);
+                      setOpenEdit(false);
+                    }}>Save Changes</Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
 
-                <DropdownMenuItem>
-                  <UserCheck className="mr-2 h-4 w-4" /> Activate
-                </DropdownMenuItem>
-                <DropdownMenuItem className="text-destructive">
-                  <UserX className="mr-2 h-4 w-4" /> Deactivate
-                </DropdownMenuItem>
-                <DropdownMenuItem className="text-destructive">
-                  <Trash2 className="mr-2 h-4 w-4" /> Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )
-        }
+              <DropdownMenuItem>
+                <UserCheck className="mr-2 h-4 w-4" /> Activate
+              </DropdownMenuItem>
+              <DropdownMenuItem className="text-destructive">
+                <UserX className="mr-2 h-4 w-4" /> Deactivate
+              </DropdownMenuItem>
+              <DropdownMenuItem className="text-destructive">
+                <Trash2 className="mr-2 h-4 w-4" /> Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )
       }
     }
   ], [departments])
