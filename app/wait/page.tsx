@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { IconCloud } from "@tabler/icons-react";
+import { Button } from "@/components/ui/button"
 import {
   Empty,
   EmptyDescription,
@@ -8,6 +9,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
+import { handleLogout } from "@/components/auth/action";
 
 export default async function WaitPage() {
   const session = await auth();
@@ -35,6 +37,9 @@ export default async function WaitPage() {
         <EmptyDescription>
           Ask to admin to give you access to the system, or wait until your account is activated.
         </EmptyDescription>
+        <form action={handleLogout}>
+          <Button type="submit">Relog</Button>
+        </form>
       </EmptyHeader>
     </Empty>
   );
