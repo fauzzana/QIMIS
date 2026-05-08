@@ -381,19 +381,28 @@ export function AssetTable({
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
-    globalFilterFn: (row, filterValue) => {
+    globalFilterFn: (row, _, filterValue) => {
       const asset = row.original
-      const search = filterValue.toLowerCase()
-      return (
-        asset.asset_serial?.toLowerCase().includes(search) ||
-        asset.name?.toLowerCase().includes(search) ||
-        asset.description?.toLowerCase().includes(search) ||
-        asset.category.category_name.toLowerCase().includes(search) ||
-        asset.location.location_name.toLowerCase().includes(search) ||
-        asset.purchase_date.toLocaleDateString().toLowerCase().includes(search) ||
-        asset.purchase_price?.toString().toLowerCase().includes(search) ||
-        getStatusLabel(asset.status).toLowerCase().includes(search) ||
-        asset.location.location_name.toLowerCase().includes(search)
+
+      const search = String(filterValue).toLowerCase().trim()
+
+      const searchableValues = [
+        asset.asset_serial,
+        asset.name,
+        asset.description,
+        asset.category?.category_name,
+        asset.location?.location_name,
+        asset.purchase_price?.toString(),
+        getStatusLabel(asset.status),
+        asset.purchase_date
+          ? new Date(asset.purchase_date).toLocaleDateString()
+          : "",
+      ]
+
+      return searchableValues.some((value) =>
+        String(value ?? "")
+          .toLowerCase()
+          .includes(search)
       )
     },
   })

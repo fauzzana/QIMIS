@@ -48,7 +48,6 @@ import {
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 
 import {
@@ -62,15 +61,12 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuSeparator,
   DropdownMenuCheckboxItem
 } from "@/components/ui/dropdown-menu"
 
 import {
   Search,
-  QrCode,
   GripVertical,
 } from "lucide-react"
 
@@ -338,14 +334,19 @@ export function ItemTable({
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
 
-    globalFilterFn: (row, filterValue) => {
-      const asset = row.original
-      const search = filterValue.toLowerCase()
-      return (
-        asset.item_id?.toString().toLowerCase().includes(search) ||
-        asset.name?.toLowerCase().includes(search) ||
-        asset.category.category_name.toLowerCase().includes(search) ||
-        asset.location.location_name.toLowerCase().includes(search)
+    globalFilterFn: (row, _, filterValue) => {
+      const item = row.original
+      const search = String(filterValue).toLowerCase().trim()
+      const searchableValue = [
+        item.item_id,
+        item.name,
+        item.category.category_name,
+        item.location.location_name
+      ]
+      return searchableValue.some((value) =>
+        String(value ?? "")
+          .toLocaleLowerCase()
+          .includes(search)
       )
     },
   })

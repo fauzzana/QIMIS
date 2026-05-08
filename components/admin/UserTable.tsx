@@ -396,13 +396,18 @@ export function UserTable({ data: initialData }: { data: z.infer<typeof schema>[
     getFacetedUniqueValues: getFacetedUniqueValues(),
     globalFilterFn: (row, filterValue) => {
       const user = row.original
-      const search = filterValue.toLowerCase()
-      return (
-        !!user.id?.toLowerCase().includes(search) ||
-        !!user.name?.toLowerCase().includes(search) ||
-        !!user.email?.toLowerCase().includes(search) ||
-        !!user.role?.toLowerCase().includes(search) ||
-        !!user.department?.depart_name?.toLowerCase().includes(search)
+      const search = String(filterValue).toLowerCase().trim()
+      const searchableValues = [
+        user.id,
+        user.name,
+        user.email,
+        user.role,
+        user.department?.depart_name
+      ]
+      return searchableValues.some((value) =>
+        String(value ?? "")
+          .toLowerCase()
+          .includes(search)
       )
     },
   })

@@ -94,7 +94,7 @@ export function TransactionButton({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="w-full">{label}</Button>
+        <Button className="w-full cursor-pointer">{label}</Button>
       </DialogTrigger>
 
       <DialogContent>

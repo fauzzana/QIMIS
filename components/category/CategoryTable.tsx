@@ -192,12 +192,17 @@ export function CategoryTable({
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
-    globalFilterFn: (row, filterValue) => {
+    globalFilterFn: (row, _, filterValue) => {
       const category = row.original
-      const search = filterValue.toLowerCase()
-      return (
-        category.category_id?.toLowerCase().includes(search) ||
-        category.category_name?.toLowerCase().includes(search)
+      const search = String(filterValue).toLowerCase().trim()
+      const searchhableValues = [
+        category.category_id,
+        category.category_name
+      ]
+      return searchhableValues.some((value) =>
+        String(value ?? "")
+          .toLowerCase()
+          .includes(search)
       )
     },
   })

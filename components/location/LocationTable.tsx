@@ -192,12 +192,17 @@ export function LocationTable({
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
-    globalFilterFn: (row, filterValue) => {
-      const asset = row.original
-      const search = filterValue.toLowerCase()
-      return (
-        asset.location_id?.toLowerCase().includes(search) ||
-        asset.location_name?.toLowerCase().includes(search)
+    globalFilterFn: (row, _, filterValue) => {
+      const location = row.original
+      const search = String(filterValue).toLowerCase().trim()
+      const searchhableValues = [
+        location.location_id,
+        location.location_name
+      ]
+      return searchhableValues.some((value) =>
+        String(value ?? "")
+          .toLowerCase()
+          .includes(search)
       )
     },
   })

@@ -128,24 +128,28 @@ export function DetailItem({ item }: DetailItemProps) {
           </div>
         </CardContent>
         <CardFooter className="bg-white flex">
-          <div className="flex gap-2">
-            <TransactionButton
-              label="Retrieval"
-              action={false}
-              itemId={item.item_id}
-              defaultName={profile.name ?? ""}
-              defaultDepartment={profile.department?.depart_name ?? "Umum"}
-            />
-            <TransactionButton
-              label="Store"
-              action={true}
-              itemId={item.item_id}
-              defaultName={profile.name ?? ""}
-              defaultDepartment={profile.department?.depart_name ?? "Umum"}
-            />
-            <Button variant="outline" onClick={() => window.history.back()}>
-              Back
-            </Button>
+          <div className="flex-col gap-4">
+            <div className="flex gap-2">
+              <TransactionButton
+                label="Retrieval"
+                action={false}
+                itemId={item.item_id}
+                defaultName={profile.name ?? ""}
+                defaultDepartment={profile.department?.depart_name ?? "Umum"}
+              />
+              <TransactionButton
+                label="Store"
+                action={true}
+                itemId={item.item_id}
+                defaultName={profile.name ?? ""}
+                defaultDepartment={profile.department?.depart_name ?? "Umum"}
+              />
+            </div>
+            <div className="flex pt-2">
+              <Button className="cursor-pointer" variant="outline" onClick={() => window.history.back()}>
+                Back
+              </Button>
+            </div>
           </div>
         </CardFooter>
       </Card>

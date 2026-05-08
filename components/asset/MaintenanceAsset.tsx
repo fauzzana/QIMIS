@@ -401,20 +401,23 @@ export function MaintenanceAsset({ data }: MaintenanceAssetProps) {
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    globalFilterFn: (row, filterValue) => {
-      const search = String(filterValue).toLowerCase()
-      const searchableFields = [
-        row.original.asset_serial,
-        row.original.name,
-        row.original.category?.category_name,
-        row.original.location?.location_name,
-        row.original.condition,
-        row.original.maintenance?.[0]?.date_end,
-        row.original.maintenance?.[0]?.status_maintain,
+    globalFilterFn: (row, _, filterValue) => {
+      const asset = row.original
+      const search = String(filterValue).toLowerCase().trim()
+      const searchableValue = [
+        asset.asset_serial,
+        asset.name,
+        asset.category?.category_name,
+        asset.location?.location_name,
+        asset.condition,
+        asset.maintenance?.[0]?.date_end,
+        asset.maintenance?.[0]?.status_maintain,
       ]
-      return searchableFields
-        .map((value) => String(value ?? "").toLowerCase())
-        .some((value) => value.includes(search))
+      return searchableValue
+        .some((value) => String(value ?? "")
+          .toLocaleLowerCase()
+          .includes(search)
+        )
     },
   })
 
